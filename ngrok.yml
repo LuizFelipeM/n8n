@@ -1,0 +1,10 @@
+version: 3
+agent:
+  log_level: info
+  log: stdout
+endpoints:
+  - name: n8n
+    description: n8n tunnel
+    url: lenient-really-badger.ngrok-free.app
+    upstream:
+      url: n8n:5678

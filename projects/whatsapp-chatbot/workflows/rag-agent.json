@@ -1,0 +1,533 @@
+{
+  "createdAt": "2025-03-05T11:52:21.735Z",
+  "updatedAt": "2025-04-02T13:51:04.647Z",
+  "id": "E6kg0EcZ451yqspi",
+  "name": "RAG Agent",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "options": {}
+      },
+      "id": "944f5368-86c2-4815-91af-fc7c931530b8",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        480,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "6VoSug2Bcrcb4Pd3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When Executed by Another Workflow').item.json.user_id }}",
+        "tableName": "chat_histories"
+      },
+      "id": "b8bd8906-6eff-456a-8555-cf210184f3c6",
+      "name": "Postgres Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1,
+      "position": [
+        140,
+        240
+      ],
+      "notesInFlow": false,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When Executed by Another Workflow').item.json.message || \"Esse é um primeiro contrato, por favor se apresente polidamente\" }}",
+        "options": {
+          "systemMessage": "={{ $json.system_message }}"
+        }
+      },
+      "id": "dc90cf6d-c4c3-47de-9c5b-d33b805222f1",
+      "name": "RAG AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        480,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "={{ $json.list_documents }}",
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "condominium_document_metadata",
+          "mode": "list",
+          "cachedResultName": "condominium_document_metadata"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        280,
+        240
+      ],
+      "id": "9c9b392d-0e51-4397-8613-5292a27c40af",
+      "name": "List Documents",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "={{ $json.get_file_contents }}",
+        "operation": "executeQuery",
+        "query": "SELECT \n    string_agg(content, ' ') as document_text\nFROM condominium_documents\n  WHERE metadata->>'file_id' = $1\nGROUP BY metadata->>'file_id';",
+        "options": {
+          "queryReplacement": "={{ $fromAI('file_id') }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        420,
+        240
+      ],
+      "id": "664c158b-efff-4eea-a281-c3fe0ba99d5d",
+      "name": "Get File Contents",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "={{ $json.query_document_rows }}",
+        "operation": "executeQuery",
+        "query": "{{ $fromAI('sql_query') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        560,
+        240
+      ],
+      "id": "4151312e-5a8a-4fc9-9e04-6759a2963600",
+      "name": "Query Document Rows",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "documents",
+        "toolDescription": "Use RAG para buscar informações na base de conhecimento.",
+        "tableName": {
+          "__rl": true,
+          "value": "condominium_documents",
+          "mode": "list",
+          "cachedResultName": "condominium_documents"
+        },
+        "topK": 5,
+        "options": {
+          "queryName": "match_documents",
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "condominium_id",
+                "value": "={{ $json.condominium_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        180
+      ],
+      "id": "58b8f3b8-a661-40a1-832b-4ad61007ffef",
+      "name": "Supabase RAG Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"message\": \"Message Body\",\n  \"user_id\": 123,\n  \"user_name\": \"User Name\",\n  \"user_phone_number\": \"551140028922\",\n  \"user_brithdate\": \"2000-01-01T00:00:00.000Z\",\n  \"condominium_id\": \"1dxCikZ3WPMDvaPL_K7UpMsgswonwdG_k\",\n  \"condominium_name\": \"Condominium Name\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        -20
+      ],
+      "id": "70c51d09-c047-4ec1-9a15-65253ef11d75",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "665d2119-9e6c-4022-ad80-965a5599bc11",
+              "name": "body",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        940,
+        -140
+      ],
+      "id": "b1389555-0b78-4d5b-90e7-c6799b4b03d6",
+      "name": "Set Response"
+    },
+    {
+      "parameters": {
+        "name": "documents",
+        "description": "={{ $json.answer_questions_with_a_vector_store }}",
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        840,
+        180
+      ],
+      "id": "c612bfde-2fbe-42bf-adac-358fce0d507a",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "condominium_documents",
+          "mode": "list",
+          "cachedResultName": "condominium_documents"
+        },
+        "options": {
+          "queryName": "match_documents",
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "condominium_id",
+                "value": "={{ $('When Executed by Another Workflow').item.json.condominium_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        840,
+        360
+      ],
+      "id": "970f7d36-5661-4592-b86a-fa2ec1399548",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        700,
+        240
+      ],
+      "id": "7c1fb939-85e1-44ab-ae25-90a72330dbef",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        920,
+        520
+      ],
+      "id": "97638523-f348-4715-8015-9de317317afd",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "6VoSug2Bcrcb4Pd3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37731f2e-b97e-45bd-a335-58624ff9931c",
+              "name": "system_message",
+              "value": "=Você é um assistente virtual que se comunica por WhatsApp do Mistercondo, e ajuda a responder perguntas e dúvidas dos moradores do condomínio {{ $json.condominium_name }}.\n\nSuas respostas sempre devem se basear nos documentos do condomínio e você deve referenciar as fontes utilizadas, informando nome do documento e sempre que possível seu link, que está na coluna 'url' da tabela 'condominium_document_metadata'. Os documentos sempre serão baseados em texto (txt, docs, extrações de pdfs, etc.) ou dados tabulares (CSVs, Documentos Excel, etc.).\n\nFoi lhe dado ferramentas para realizar RAG na tabela de 'condominium_documents', olhe os documentos disponíveis na sua base de conhecimento baseado na tabela 'condominium_document_metadata', extraia todo o texto do documento, e busque os arquivos tabulares com SQL na tabela 'condominium_document_rows'.\n\nSempre inicie utilizando o RAG a não ser que o documento para responder a pergunta seja um documento tabular, ou se houver a necessidade de algum recurso SQL como sum, avg entre outros. Se o RAG não ajudar então olhe nos documentos que estão disponíveis para você e separe alguns que acredita que contenham a resposta e os analise.\n\nSe atenha ao assunto, não responda perguntas fora do escopo de condomínio. Quando não souber a resposta informe ao morador, não responda o que não souber, caso não tenha entendido mais de 2 vezes informe que irá transferir para um atendente humano.\n\nNesse momento você está conversando com {{ $json.user_name }}, dono do número de celular {{ $json.user_phone_number }} {{ $if($json.user_brithdate, \"e nascido em \" + $json.user_brithdate, \"\") }}.",
+              "type": "string"
+            },
+            {
+              "id": "a423210f-21db-4717-a765-ffa547315dd7",
+              "name": "list_documents",
+              "value": "Use esta ferramenta para buscar todos os documentos disponíveis, incluindo o schema das tabelas se o arquivo for do tipo XLSX, CSV, Excel ou outro dado tabular.",
+              "type": "string"
+            },
+            {
+              "id": "f2be6fd8-13f1-4f73-bcf7-e75d3373f08e",
+              "name": "get_file_contents",
+              "value": "Dado o ID do arquivo, busque o texto do documento.",
+              "type": "string"
+            },
+            {
+              "id": "a717d4a7-76a4-4e4b-a92d-ae8e6b2c29db",
+              "name": "query_document_rows",
+              "value": "Executa uma query SQL - use esta ferramenta para buscar da tabela condominium_document_rows uma vez que você souber o ID do documento que está buscando. dataset_id é o file_id e você deve sempre utilizar o row_data para filtrar, row_data é uma campo jsonb que possui todas as chaves do schema do documento encontrados na tabela condominium_document_metadata.\n\nExemplo de query:\n\nSELECT AVG((row_data->>'revenue')::numeric)\nFROM condominium_document_rows\nWHERE dataset_id = '123';\n\nExemplo de query 2:\n\nSELECT \n    row_data->>'category' as category,\n    SUM((row_data->>'sales')::numeric) as total_sales\nFROM condominium_document_rows\nWHERE dataset_id = '123'\nGROUP BY row_data->>'category';",
+              "type": "string"
+            },
+            {
+              "id": "096dab0b-c3d3-4b1d-ae1a-f7401b715c45",
+              "name": "answer_questions_with_a_vector_store",
+              "value": "Use RAG para buscar informações na base de documentos disponível do condomínio.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "e4409944-fc9f-42b4-b139-161a5cb1c50f",
+      "name": "Set Prompts (editable)"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Documents": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File Contents": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Document Rows": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase RAG Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Set Prompts (editable)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Supabase RAG Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Prompts (editable)": {
+      "main": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "user_id": 1,
+          "user_name": "Luiz",
+          "user_phone_number": "5511976217868",
+          "user_brithdate": "1999-09-11T00:00:00.000Z",
+          "condominium_id": "1dxCikZ3WPMDvaPL_K7UpMsgswonwdG_k",
+          "condominium_name": "Condo 2"
+        }
+      }
+    ]
+  },
+  "versionId": "3d5d5a05-cdf3-483a-a68d-1f5608bf388c",
+  "triggerCount": 0,
+  "tags": []
+}

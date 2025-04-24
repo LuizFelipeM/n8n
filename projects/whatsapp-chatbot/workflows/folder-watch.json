@@ -1,0 +1,281 @@
+{
+  "createdAt": "2025-02-26T14:46:14.131Z",
+  "updatedAt": "2025-04-15T00:41:07.269Z",
+  "id": "XXmG7fsFAe68u0lM",
+  "name": "Folder Watch",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "44mBTPOhCDeUkjmK",
+          "mode": "list",
+          "cachedResultName": "Ingest Files"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        -480
+      ],
+      "id": "093e8809-12d7-40f9-bbb1-215dd111c8bf",
+      "name": "Ingest Files"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "105nc63fgWYq1ZLnNUS47CH7ngerwSsT5",
+          "mode": "id"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -280
+      ],
+      "id": "86ce0226-6bf8-47ae-a703-2b04691d2acf",
+      "name": "On File Created (Condo C)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "105nc63fgWYq1ZLnNUS47CH7ngerwSsT5",
+          "mode": "id"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -130
+      ],
+      "id": "235bdd34-b64e-46e9-b7fc-069891bdfe09",
+      "name": "On File Updated (Condo C)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1xUTzzX6Xt0fwA91sl7SEDRGBAq8QTxY5",
+          "mode": "id"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        600,
+        70
+      ],
+      "id": "664696a4-af86-407c-b53c-57edab7aff8d",
+      "name": "On File Created (Condo Teste)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1xUTzzX6Xt0fwA91sl7SEDRGBAq8QTxY5",
+          "mode": "id"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        600,
+        220
+      ],
+      "id": "ff75557f-e203-4eee-9256-da5cd5e4478e",
+      "name": "On File Updated (Condo Teste)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On File Created (Condo C)": {
+      "main": [
+        [
+          {
+            "node": "Ingest Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On File Updated (Condo C)": {
+      "main": [
+        [
+          {
+            "node": "Ingest Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On File Created (Condo Teste)": {
+      "main": [
+        [
+          {
+            "node": "Ingest Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On File Updated (Condo Teste)": {
+      "main": [
+        [
+          {
+            "node": "Ingest Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 3600,
+    "errorWorkflow": "VzqKEW0ShTXA5vPj",
+    "timezone": "America/New_York",
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:On File Created (Porto São Paulo 1)": {
+      "lastTimeChecked": "2025-02-27T11:34:12Z"
+    },
+    "node:On File Updated (Porto São Paulo 1)": {
+      "lastTimeChecked": "2025-02-27T11:34:59Z"
+    },
+    "node:On File Created (Condo 1)": {
+      "lastTimeChecked": "2025-03-07T18:45:05Z"
+    },
+    "node:On File Updated (Condo 1)": {
+      "lastTimeChecked": "2025-03-07T18:45:40Z"
+    },
+    "node:On File Created (Condo 2)": {
+      "lastTimeChecked": "2025-03-07T13:56:14Z"
+    },
+    "node:On File Updated (Condo 2)": {
+      "lastTimeChecked": "2025-03-07T13:56:15Z"
+    },
+    "node:On File Created (Condo 12)": {
+      "lastTimeChecked": "2025-03-12T15:58:05Z"
+    },
+    "node:On File Updated (Condo 12)": {
+      "lastTimeChecked": "2025-03-12T15:58:05Z"
+    },
+    "node:On File Created (Condomínio A)": {
+      "lastTimeChecked": "2025-03-12T15:58:06Z"
+    },
+    "node:On File Updated (Condomínio A)": {
+      "lastTimeChecked": "2025-03-12T15:58:06Z"
+    },
+    "node:On File Created (Condo A)": {
+      "lastTimeChecked": "2025-04-02T12:06:41Z"
+    },
+    "node:On File Updated (Condo A)": {
+      "lastTimeChecked": "2025-04-02T12:06:41Z"
+    },
+    "node:On File Created (Condo C)": {
+      "lastTimeChecked": "2025-04-24T10:55:09Z"
+    },
+    "node:On File Updated (Condo C)": {
+      "lastTimeChecked": "2025-04-24T10:55:10Z"
+    },
+    "node:On File Created (Condo Teste)": {
+      "lastTimeChecked": "2025-04-24T10:55:10Z"
+    },
+    "node:On File Updated (Condo Teste)": {
+      "lastTimeChecked": "2025-04-24T10:55:11Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "0926f614-af93-436a-b9d3-215f054ce48e",
+  "triggerCount": 4,
+  "tags": []
+}

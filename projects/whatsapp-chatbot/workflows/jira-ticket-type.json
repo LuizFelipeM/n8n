@@ -1,0 +1,539 @@
+{
+  "createdAt": "2025-03-18T13:24:32.537Z",
+  "updatedAt": "2025-03-25T16:17:10.554Z",
+  "id": "DWQU6MjNQr6yBKxN",
+  "name": "Jira Ticket Type",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "title",
+              "value": "Eletricidade",
+              "type": "string"
+            },
+            {
+              "id": "1c8c39f8-a8df-4db2-bf60-213b5bbf8873",
+              "name": "rows",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        -100
+      ],
+      "id": "8e99d571-2c32-44ea-9f5e-ce4b24601a57",
+      "name": "Electricity Section"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_type.electricity.lights",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Iluminação do corredor",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -260
+      ],
+      "id": "85332c43-9546-405b-869d-d3a94a05a22a",
+      "name": "Lights Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_type.electricity.power_shortage",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Falta de energia",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -100
+      ],
+      "id": "b8f73a5b-51e7-4240-a2a1-a374e78e9732",
+      "name": "Power Shortage Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_type.security.broken_cameras",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Cameras quebradas",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        80
+      ],
+      "id": "84987ec4-c6dc-446b-a0ca-5eb60b3a9234",
+      "name": "Broken Cameras Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_type.security.eletric_fences",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Cercas elétricas",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        240
+      ],
+      "id": "5672b2cf-9936-470f-83ca-b1846692336d",
+      "name": "Eletric Fences Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "title",
+              "value": "Segurança",
+              "type": "string"
+            },
+            {
+              "id": "1c8c39f8-a8df-4db2-bf60-213b5bbf8873",
+              "name": "rows",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        80
+      ],
+      "id": "dfa76d54-afa3-4afb-8fcf-282e8b503cfc",
+      "name": "Security Section"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        0,
+        -100
+      ],
+      "id": "881b5d40-cc49-4e99-8036-70e9081d365a",
+      "name": "Merge Electricity Rows"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -100
+      ],
+      "id": "37652139-f2eb-43cf-9d69-acb42357009e",
+      "name": "Aggregate Electricity Section Rows"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        0,
+        80
+      ],
+      "id": "e4b7b8c8-d570-4341-a937-cddf57538fb2",
+      "name": "Merge Security Rows"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        220,
+        80
+      ],
+      "id": "8679af0c-f670-43cd-8617-41f8a48dcd92",
+      "name": "Aggregate Security Section Rows"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -540,
+        0
+      ],
+      "id": "4dd1326d-bef6-494d-92f4-529ecee7281c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        700,
+        0
+      ],
+      "id": "534bdae1-d00c-4a52-8199-57988d7e0204",
+      "name": "Merge All Sections"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        920,
+        0
+      ],
+      "id": "9a9ed48c-6ff5-4c38-a962-9794b6816990",
+      "name": "Aggregate Sections"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "29c14cd9-89f7-4244-a029-fc1a38676c3a",
+              "name": "body",
+              "value": "Por favor, escolha o tipo de ocorrência que deseja abrir chamado.",
+              "type": "string"
+            },
+            {
+              "id": "70abee22-edd7-400c-85e8-06d7d0aeb64c",
+              "name": "button",
+              "value": "Tipo de ocorrência",
+              "type": "string"
+            },
+            {
+              "id": "82b72e44-66b1-4fed-9d5f-4a2012e2fc7d",
+              "name": "sections",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1140,
+        0
+      ],
+      "id": "2e2152cb-1638-42bb-8029-0ebcf1176260",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "Electricity Section": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lights Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Electricity Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Power Shortage Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Electricity Rows",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Broken Cameras Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Security Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eletric Fences Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Security Rows",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Security Section": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sections",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Electricity Rows": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Electricity Section Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Electricity Section Rows": {
+      "main": [
+        [
+          {
+            "node": "Electricity Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Security Rows": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Security Section Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Security Section Rows": {
+      "main": [
+        [
+          {
+            "node": "Security Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Lights Row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Power Shortage Row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Broken Cameras Row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Eletric Fences Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Sections": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Sections": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Edit Fields": [
+      {
+        "json": {
+          "body": "Por favor, escolha o tipo de ocorrência que deseja abrir chamado.",
+          "sections": [
+            {
+              "title": "Eletricidade",
+              "rows": [
+                {
+                  "id": "ticket_type.electricity.lights",
+                  "title": "Iluminação",
+                  "description": ""
+                },
+                {
+                  "id": "ticket_type.electricity.power_shortage",
+                  "title": "Falta de energia",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "title": "Segurança",
+              "rows": [
+                {
+                  "id": "ticket_type.security.broken_cameras",
+                  "title": "Cameras quebradas",
+                  "description": ""
+                },
+                {
+                  "id": "ticket_type.security.eletric_fences",
+                  "title": "Cercas elétricas",
+                  "description": ""
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "versionId": "a00fb1ac-2871-40c6-b7de-6075cbbfdac3",
+  "triggerCount": 0,
+  "tags": []
+}

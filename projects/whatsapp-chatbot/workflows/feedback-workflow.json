@@ -1,0 +1,1080 @@
+{
+  "createdAt": "2025-03-11T11:26:56.573Z",
+  "updatedAt": "2025-04-23T12:39:49.518Z",
+  "id": "T8pSUTXESqT74fwb",
+  "name": "Feedback Workflow",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.*, csm.*\nFROM chat_session_metadata csm\nJOIN users u on u.id = csm.user_id\nWHERE csm.last_interaction_time < $1\nAND csm.active_session_type in ('ask_questions');",
+        "options": {
+          "queryReplacement": "='{{ $now.minus(4, \"minutes\").set({ seconds: 59, milliseconds: 0 }).toString() }}'"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        240,
+        -140
+      ],
+      "id": "a50be987-847d-4d5b-bec1-1debbbb08e23",
+      "name": "Select Old Chat Session Metadata",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/615396718313030/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"{{ $json.phone_number }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"body\": {\n      \"text\": \"{{ $json.body }}\"\n    },\n    \"action\": {{ $json.action.toJsonString() }}\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1800,
+        200
+      ],
+      "id": "4b2bd921-083b-45c6-97ec-fe86a695fc3e",
+      "name": "WhatsApp Reply List",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "817bc05d-8c7e-40aa-a557-4a162e85670b",
+              "name": "phone_number",
+              "value": "={{ $json.phone_number }}",
+              "type": "string"
+            },
+            {
+              "id": "183ccb59-a9a4-4551-b0e8-e60f55425751",
+              "name": "body",
+              "value": "Como está alguns minutos sem responder gostaria de perguntar se as respostas foram úteis, para que possa encerrar a conversa.",
+              "type": "string"
+            },
+            {
+              "id": "bdcd6d53-5f3e-4d79-9cf4-67c7c70b85dc",
+              "name": "action",
+              "value": "{\n  \"button\": \"A resposta foi útil?\",\n  \"sections\": [\n    {\n      \"rows\": [\n        {\n          \"id\": \"feedback.1\",\n          \"title\": \"⭐\"\n        },\n        {\n          \"id\": \"feedback.2\",\n          \"title\": \"⭐⭐\"\n        },\n        {\n          \"id\": \"feedback.3\",\n          \"title\": \"⭐⭐⭐\"\n        },\n        {\n          \"id\": \"feedback.4\",\n          \"title\": \"⭐⭐⭐⭐\"\n        },\n        {\n          \"id\": \"feedback.5\",\n          \"title\": \"⭐⭐⭐⭐⭐\"\n        }\n      ]\n    }\n  ]\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1580,
+        200
+      ],
+      "id": "a58232ca-e116-4f76-b9d0-237c51b9511a",
+      "name": "Feedback Response"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"user_id\": 123,\n  \"user_phone_number\": \"5511999999999\",\n  \"message_type\": \"feedback.two\",\n  \"message_id\": \"feedback.2\",\n  \"message_body\": \"⭐⭐\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -380
+      ],
+      "id": "61bc9c92-8468-42a0-b7d9-43814b852061",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "665d2119-9e6c-4022-ad80-965a5599bc11",
+              "name": "body",
+              "value": "Obrigado pela sua resposta!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -380
+      ],
+      "id": "b9422c7b-72c0-4113-ad17-a22cb2d954fe",
+      "name": "Set Response"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_session_metadata",
+          "mode": "list",
+          "cachedResultName": "chat_session_metadata"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Loop Over Sessions').item.json.id }}",
+            "last_interaction_time": "={{ $now.toUTC() }}",
+            "active_session_type": "feedback",
+            "phone_number": "={{ $json.phone_number }}"
+          },
+          "matchingColumns": [
+            "user_id",
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "active_session_type",
+              "displayName": "active_session_type",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_interaction_time",
+              "displayName": "last_interaction_time",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        920,
+        340
+      ],
+      "id": "99bf0737-83dc-42e5-a3b0-3683164b7017",
+      "name": "Update Chat Session Metadata",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        440,
+        100
+      ],
+      "id": "66abd5b3-ae5a-4203-abfc-2e5b6c793026",
+      "name": "Loop Over Sessions"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_session_metadata",
+          "mode": "list",
+          "cachedResultName": "chat_session_metadata"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "user_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.user_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        220,
+        -380
+      ],
+      "id": "d760092f-0d56-472a-b31b-dc78abc912fe",
+      "name": "Delete User Active Session",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        -40
+      ],
+      "id": "16c0edb4-4c1a-45c6-8dfc-9f7f58cb06a3",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "25d66ccd-606a-41ae-9d25-5bd90371ea03",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        -40
+      ],
+      "id": "feb1212c-fbcf-4ae4-8395-100a1074418a",
+      "name": "If Active Session Deleted",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "615396718313030",
+        "recipientPhoneNumber": "={{ $json.phone_number }}",
+        "textBody": "Para sua conveniência irei encerrar a conversa.\nCaso possua mais alguma dúvida ou queira notificar uma ocorrência, por favor, entre em contato novamente.",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        20
+      ],
+      "id": "50d0305e-cc8e-43e1-a340-580757cb2c7e",
+      "name": "WhatsApp Business Cloud",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8291bb42-1c76-45cc-909b-549cfe4e122d",
+              "name": "message",
+              "value": "={\n  \"type\": \"{{ $json.message.type }}\",\n  \"content\": \"{{ $json.message.content }}\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        340
+      ],
+      "id": "cd19e6fb-269b-4604-a399-f7b43939d021",
+      "name": "Set Message"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        920,
+        560
+      ],
+      "id": "75eb21af-7a8c-486d-aede-ec971c53dc31",
+      "name": "Summarize Messages"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "feedbacks",
+          "mode": "list",
+          "cachedResultName": "feedbacks"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Loop Over Sessions').item.json.id }}",
+            "date": "={{ $now.toUTC() }}",
+            "chat": "=[{{ $json.concatenated_message }}]"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat",
+              "displayName": "chat",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rating",
+              "displayName": "rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1140,
+        560
+      ],
+      "id": "7eda42f9-8880-4cff-8d94-b6f2cdac8a98",
+      "name": "Insert Feedback",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_histories",
+          "mode": "list",
+          "cachedResultName": "chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Loop Over Sessions').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1360,
+        560
+      ],
+      "id": "75d72a26-d071-4d94-9387-66f822244019",
+      "name": "Delete User Chat Histories",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_histories",
+          "mode": "list",
+          "cachedResultName": "chat_histories"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Loop Over Sessions').item.json.id }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "id"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "message"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1140,
+        340
+      ],
+      "id": "8144bf38-efd2-470a-bdad-71199fb3b128",
+      "name": "Select messages in Chat Histories",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update feedbacks\nset rating = $1\nwhere rating is null\n  and id in (\n    select max(id)\n    from feedbacks\n    where user_id = $2\n      and rating is null\n  );",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.message_id.replace(\"feedback.\", \"\").toNumber() }}, {{ $('When Executed by Another Workflow').item.json.user_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        -380
+      ],
+      "id": "edccd8c4-544c-4076-8f41-22b7b399dc2f",
+      "name": "Update Latest Feedback Rating",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_session_medias\nWHERE user_id in ($1);",
+        "options": {
+          "queryReplacement": "={{ $json.data.filter(({ user_id }) => user_id).map(({ user_id }) => user_id).join(\",\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1360,
+        -200
+      ],
+      "id": "f91bff55-ab6d-4cb4-aeb1-f25ad0b440e2",
+      "name": "Delete Chat Medias",
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_session_metadata\nWHERE (last_interaction_time at time zone 'utc') < $1\n  AND active_session_type in ('feedback', 'create_ticket', 'ask_for_proposal')\nRETURNING user_id, phone_number, last_interaction_time;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC().minus(5, \"minutes\").set({ seconds: 59, milliseconds: 0 }) }}'"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        680,
+        -40
+      ],
+      "id": "c2446f08-830c-4923-b574-868a8c774b03",
+      "name": "Delete Active Sessions",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "5a02a575-a069-4c0f-b4c4-17596d419f4e",
+        "options": {
+          "allowedOrigins": "*",
+          "ignoreBots": false,
+          "noResponseBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        20,
+        100
+      ],
+      "id": "85a70d8c-7dd7-4ac8-a529-da148b0b4af6",
+      "name": "Webhook",
+      "webhookId": "5a02a575-a069-4c0f-b4c4-17596d419f4e"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        240,
+        100
+      ],
+      "id": "30390211-b4c3-46b5-b80e-4f6bc171749f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1360,
+        20
+      ],
+      "id": "a7be057f-1ab0-4cb1-9b64-515fa5bbbe1b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6cefbbfd-6cee-4dea-9c1d-f5c80d09af16",
+              "leftValue": "={{ $json.active_session_type }}",
+              "rightValue": "ask_questions",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "082711ce-7d13-48a1-9499-08c5ae3559bd",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        120
+      ],
+      "id": "09ea98d8-8377-409d-a22a-fbdda24b31d7",
+      "name": "If  old session metadata is ask_questions and has user_id"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        20
+      ],
+      "id": "a5134766-f511-4440-a427-6d8e6d774f5c",
+      "name": "Split Deleted Active Sessions"
+    }
+  ],
+  "connections": {
+    "Select Old Chat Session Metadata": {
+      "main": [
+        []
+      ]
+    },
+    "Feedback Response": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Reply List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Delete User Active Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Chat Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "Select messages in Chat Histories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Sessions": {
+      "main": [
+        [
+          {
+            "node": "Delete Active Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If  old session metadata is ask_questions and has user_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete User Active Session": {
+      "main": [
+        [
+          {
+            "node": "Update Latest Feedback Rating",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Delete Chat Medias",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If Active Session Deleted": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Message": {
+      "main": [
+        [
+          {
+            "node": "Summarize Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Messages": {
+      "main": [
+        [
+          {
+            "node": "Insert Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Feedback": {
+      "main": [
+        [
+          {
+            "node": "Delete User Chat Histories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete User Chat Histories": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select messages in Chat Histories": {
+      "main": [
+        [
+          {
+            "node": "Set Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Latest Feedback Rating": {
+      "main": [
+        [
+          {
+            "node": "Set Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Chat Medias": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Active Sessions": {
+      "main": [
+        [
+          {
+            "node": "If Active Session Deleted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Split Deleted Active Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If  old session metadata is ask_questions and has user_id": {
+      "main": [
+        [
+          {
+            "node": "Feedback Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Chat Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Deleted Active Sessions": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Every 5 minutes": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "user_id": 0,
+          "user_phone_number": "5511976217868",
+          "message_type": "feedback.two",
+          "message_id": "feedback.2",
+          "message_body": "⭐⭐"
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "lenient-really-badger.ngrok-free.app",
+            "user-agent": "Deno/1.45.2 (variant; SupabaseEdgeRuntime/1.67.3)",
+            "content-length": "329",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "x-forwarded-for": "2600:1f1e:229:a901:f4bf:a607:ff2e:cffb",
+            "x-forwarded-host": "lenient-really-badger.ngrok-free.app",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": [
+            {
+              "user_id": null,
+              "active_session_type": "ask_for_proposal",
+              "last_interaction_time": "2025-04-23T11:32:34.713603",
+              "data": {},
+              "phone_number": "5511976217868",
+              "user": null
+            },
+            {
+              "user_id": null,
+              "active_session_type": "ask_for_proposal",
+              "last_interaction_time": "2025-04-23T11:32:34.713603",
+              "data": {},
+              "phone_number": "5511976217869",
+              "user": null
+            }
+          ],
+          "webhookUrl": "https://lenient-really-badger.ngrok-free.app/webhook/5a02a575-a069-4c0f-b4c4-17596d419f4e",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "45271d29-0231-400b-be0d-60951a9ad31d",
+  "triggerCount": 1,
+  "tags": []
+}

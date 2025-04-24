@@ -1,0 +1,1924 @@
+{
+  "createdAt": "2025-03-05T14:12:10.267Z",
+  "updatedAt": "2025-04-23T11:38:54.809Z",
+  "id": "B3UwefI9UdmLm3Od",
+  "name": "Manage Jira",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"message_id\": \"example.1\",\n  \"message_type\": \"example\",\n  \"message_body\": \"Some message\",\n  \"current_user\": {\n    \"id\": 1,\n    \"user_type_id\": 1,\n    \"condominium_id\": \"1LOLzPfGPmHxr_NcZjh3X9WOL1mM1Cnuj\",\n    \"nif\": \"123456789\",\n    \"name\": \"Luiz Muniz Moura\",\n    \"phone_number\": \"5511976217868\",\n    \"birthdate\": null,\n    \"jira_id\": \"712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42\"\n  },\n  \"image\": {\n    \"caption\": \"Gostaria de informar também que outros apartamentos estão sem energia também\",\n    \"mime_type\": \"image/jpeg\",\n    \"sha256\": \"BQVS/B06NlbMLby0K+JYajITqTNoweNJMEUNC/P6Ppg=\",\n    \"id\": \"1378327633606603\"\n  }\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        0
+      ],
+      "id": "855d960f-ff6c-4de1-a510-579e53a3394f",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "chat_session_metadata",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ $json.current_user.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "39fbb9a7-146b-4f2b-bbe9-2ce336b24a2c",
+      "name": "Get Chat Session Metadata",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e2e0a4c-b30f-4dc1-9fa1-3a376c6fc0f1",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "object"
+            },
+            {
+              "id": "d725cde9-2fb0-45d0-852c-6974a837dbdd",
+              "name": "current_user",
+              "value": "={{ $('When Executed by Another Workflow').item.json.current_user }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -140,
+        0
+      ],
+      "id": "1bccbdf7-8269-4fa6-8b4f-ee7934d3bd05",
+      "name": "Set Chat Session Metadata"
+    },
+    {
+      "parameters": {
+        "url": "https://dltagg.atlassian.net/rest/api/3/project",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        400
+      ],
+      "id": "21a471ad-8967-4e35-b82c-94e33c4d204e",
+      "name": "Get Projects",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45d8e300-ac30-42ac-b0b3-3d39d4dccc7a",
+              "name": "body",
+              "value": "=Obrigado por informar o ocorrido!\nO ticket {{ $('Create Task').first().json.key }}, referente a ocorrência que você acabou de reportar, foi aberto. Entraremos em contato, em até 72 horas, ao solucionarmos o problema, desde já agradecemos a compreensão.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1640,
+        800
+      ],
+      "id": "c92a8e30-e3ff-4c98-952a-4b4dc906dd3d",
+      "name": "Create Ticket Response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE chat_session_metadata csm\nSET\n  last_interaction_time = $1,\n  data = jsonb_set(\n    data,\n    $2,\n    $3,\n    true\n  )\nWHERE user_id = $4\nRETURNING *;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC() }}', '{{ \"{\" + $json.message_id.split(\".\")[0] + \"}\" }}', '{{ \"\\\"\" + $json.message_id.split(\".\").slice(1).join(\".\") + \"\\\"\"  }}', {{ $json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -400,
+        -200
+      ],
+      "id": "81dbd896-b855-4866-9d90-975289295307",
+      "name": "Update Metadata Data",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8448526c-5e48-4c68-8591-440e43b74842",
+              "leftValue": "={{ $json.message_id.startsWith(\"ticket_\") }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -660,
+        0
+      ],
+      "id": "5c654840-5970-46bb-bd05-0f2b382eca60",
+      "name": "If Needs to Update Metadata"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "401d3206-7a1c-46c2-a258-6ac2f7d9a0a3",
+              "name": "body",
+              "value": "Poderia fornecer uma descrição mais detalhada do problema que está enfrentando?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        820,
+        -80
+      ],
+      "id": "8b96124f-cb1d-4392-965c-a27b4ed532ab",
+      "name": "Get Description Response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "DWQU6MjNQr6yBKxN",
+          "mode": "list",
+          "cachedResultName": "Jira Ticket Sections"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        -520
+      ],
+      "id": "54f8d0b6-65f0-4b5c-bbb7-6e49919da6d4",
+      "name": "Execute Jira Ticket Type Workflow"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "m50zdIgN7G1VHM9w",
+          "mode": "list",
+          "cachedResultName": "Jira Ticket Quantity of Affected People"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        -300
+      ],
+      "id": "f3a3cc84-f5e8-46ee-b0e6-b575a2d7145d",
+      "name": "Execute Quantity of Affected People Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "614ce7f3-a60f-4420-9527-d82bd763e603",
+              "name": "type",
+              "value": "list",
+              "type": "string"
+            },
+            {
+              "id": "34820154-06e2-4fb0-bf61-8bca81f89cd2",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "string"
+            },
+            {
+              "id": "98844b9c-d128-47bb-969f-080a4951b724",
+              "name": "action",
+              "value": "={\n  \"button\": \"{{ $json.button }}\",\n  \"sections\": {{ $json.sections.toJsonString() }}\n}\n",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        820,
+        -420
+      ],
+      "id": "2685dc59-aa05-42bd-926f-ae5119f479ef",
+      "name": "List Response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "28952db4-2097-4768-9f27-cfb39c0d61b9",
+                    "leftValue": "={{ $('Set Chat Session Metadata').item.json.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Get Ticket Type"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Set Chat Session Metadata').item.json.data.ticket_sub_step }}",
+                    "rightValue": "get_number_of_people_affected",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Get Number of People Affected"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e6438df5-6a6a-4d77-afdc-4bbd087d9b16",
+                    "leftValue": "={{ $('Set Chat Session Metadata').item.json.data.ticket_sub_step }}",
+                    "rightValue": "get_description",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Get Description"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3f745ec2-a3c7-489c-82b6-c2b0a69bbac0",
+                    "leftValue": "={{ $('Set Chat Session Metadata').item.json.data.ticket_sub_step }}",
+                    "rightValue": "add_more",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Add More"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        100,
+        -20
+      ],
+      "id": "3951ba51-e2ed-443a-ba3a-971ec41cd73c",
+      "name": "Switch by Step"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Por favor, crie um título para esse problema \"{{ $('Set Chat Session Metadata').item.json.data.ticket_description }}\", retorne somente o título."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        820,
+        560
+      ],
+      "id": "40e7e3af-652e-4dbe-8ae5-53d271eeedc4",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "6VoSug2Bcrcb4Pd3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f8dd39da-66dc-4998-b792-25a21f7ac04c",
+              "name": "priority",
+              "value": "={{ $('Set Chat Session Metadata').item.json.data.ticket_qty_affected }}",
+              "type": "string"
+            },
+            {
+              "id": "65736394-f57f-46f9-92ea-a10a1c7f5346",
+              "name": "account_id",
+              "value": "={{ $('Set Chat Session Metadata').item.json.current_user.jira_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8dbd82be-5ace-43c1-8f60-5cd54de83176",
+              "name": "summary",
+              "value": "={{ $json.message.content.replaceAll(/(?<=^)\"|\"(?=$)/gm, \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "7a9c7b9a-7816-4396-8346-fc3642f0beec",
+              "name": "description",
+              "value": "={{ $('Set Chat Session Metadata').item.json.data.ticket_description }}",
+              "type": "string"
+            },
+            {
+              "id": "3c05cefe-baef-4b42-b5f0-62319e9857b7",
+              "name": "condominium",
+              "value": "={{ $('Get Condominium').item.json.jira_id }}",
+              "type": "string"
+            },
+            {
+              "id": "2d5d32f7-98cf-4aee-9ca5-fa3cacd11a06",
+              "name": "user_id",
+              "value": "={{ $('Set Chat Session Metadata').item.json.current_user.id }}",
+              "type": "number"
+            },
+            {
+              "id": "0ff2cc53-79b7-43e0-a622-ed18b02056af",
+              "name": "user_phone_number",
+              "value": "={{ $('Set Chat Session Metadata').item.json.current_user.phone_number }}",
+              "type": "string"
+            },
+            {
+              "id": "99994c3a-4832-4455-aff2-b46a2fb842a7",
+              "name": "user_name",
+              "value": "={{ $('Set Chat Session Metadata').item.json.current_user.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        560
+      ],
+      "id": "1508afbf-5144-4721-830b-57367522d02f",
+      "name": "Set Ticket Data"
+    },
+    {
+      "parameters": {
+        "events": [
+          "jira:issue_updated"
+        ],
+        "additionalFields": {
+          "filter": "status IN (\"Done\", \"Closed\", \"Resolved\")"
+        }
+      },
+      "type": "n8n-nodes-base.jiraTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        -600
+      ],
+      "id": "eabd8860-6e4e-42a2-9e80-5014b2244faf",
+      "name": "Jira Ticket Moved to Done Trigger",
+      "webhookId": "50861c44-9510-4166-815c-994db1d7106c",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "615396718313030",
+        "recipientPhoneNumber": "={{ $json.phone_number }}",
+        "textBody": "={{ $json.body }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -600
+      ],
+      "id": "9e9badc9-a7e4-4a99-a97d-6396d96fadd4",
+      "name": "WhatsApp Business Cloud",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.issue.fields.customfield_10191 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -600
+      ],
+      "id": "70e3a20d-2808-4651-90f9-69d5923cfdef",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d617a7ae-6386-41b8-9c73-83df47e76a6e",
+              "leftValue": "={{ $('When Executed by Another Workflow').item.json.message_type }}",
+              "rightValue": "button_reply",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "70ddb83d-9eb9-4027-8141-3a47590c5906",
+              "leftValue": "={{ $('When Executed by Another Workflow').item.json.message_id }}",
+              "rightValue": "no",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        260
+      ],
+      "id": "150ca60f-b7b9-4888-8be9-a9d94e00fe73",
+      "name": "If More Context Provided"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE chat_session_metadata\nSET\n  last_interaction_time = $1,\n  data = jsonb_set(\n    data,\n    '{ticket_description}',\n    $2,\n    true\n  )\nWHERE user_id = $3\nRETURNING *;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC() }}', '{{ \"\\\"\" + (($('Set Chat Session Metadata').item.json.data.ticket_description || \"\") + \" \" + $('When Executed by Another Workflow').item.json.message_body).trim() + \"\\\"\" }}', {{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        980,
+        360
+      ],
+      "id": "02843d31-d68c-4cdb-a81a-3fb459c97a97",
+      "name": "Append Description",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10d95703-6ee1-4565-bb82-8b3146f15574",
+              "name": "body",
+              "value": "Deseja adicionar fotos, mais detalhes, ou algo a mais a sua notificação de ocorrência?",
+              "type": "string"
+            },
+            {
+              "id": "fc44f5f3-f27e-4c90-b037-309efa61ca27",
+              "name": "type",
+              "value": "reply_buttons",
+              "type": "string"
+            },
+            {
+              "id": "a83a4bb1-2fc5-4e6e-b6d3-184547299241",
+              "name": "reply_buttons",
+              "value": "[\n  {\n    \"id\": \"no\",\n    \"title\": \"Não\"\n  }\n]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        360
+      ],
+      "id": "0ed8424b-5135-42cd-aeb1-6f4f89ab1f07",
+      "name": "Add More Response",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE chat_session_metadata\nSET\n  last_interaction_time = $1,\n  data = jsonb_set(\n    data,\n    '{ticket_sub_step}',\n    '\"get_number_of_people_affected\"',\n    true\n  )\nWHERE user_id = $2\nRETURNING *;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC() }}', {{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        380,
+        -520
+      ],
+      "id": "68fde50a-d003-481a-8917-9bbeb0f8e4e5",
+      "name": "Set Next Sub Step to Get Number of People Affected",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE chat_session_metadata\nSET\n  last_interaction_time = $1,\n  data = jsonb_set(\n    data,\n    '{ticket_sub_step}',\n    '\"get_description\"',\n    true\n  )\nWHERE user_id = $2\nRETURNING *;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC() }}', {{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        380,
+        -300
+      ],
+      "id": "36c19e25-64a2-4f8f-b328-55766b65eb7f",
+      "name": "Set Next Sub Step to Get Description",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE chat_session_metadata\nSET\n  last_interaction_time = $1,\n  data = jsonb_set(\n    data,\n    '{ticket_sub_step}',\n    '\"add_more\"',\n    true\n  )\nWHERE user_id = $2\nRETURNING *;",
+        "options": {
+          "queryReplacement": "='{{ $now.toUTC() }}', {{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        600,
+        -80
+      ],
+      "id": "5f798307-4e6a-4d56-a435-e42fee0a31ba",
+      "name": "Set Next Sub Step to Add more",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "chat_session_metadata",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        800
+      ],
+      "id": "3d9dbfc3-e4cf-4f45-992b-ecca3a4beec2",
+      "name": "Delete Chat Session Metadata",
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "condominiums",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Set Chat Session Metadata').item.json.current_user.condominium_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        600,
+        560
+      ],
+      "id": "c0357b47-3799-4a72-9037-9c47634b07bb",
+      "name": "Get Condominium",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://dltagg.atlassian.net/rest/api/3/field/customfield_10124/context/10225/option",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        580
+      ],
+      "id": "e9948413-1772-4cfe-8df5-ba47f480b1d9",
+      "name": "Get Custom Field Options (context)",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dltagg.atlassian.net/rest/api/3/field/customfield_10124/context/10225/option",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"options\": [\n    {\n      \"disabled\": false,\n      \"value\": \"Condo A\"\n    },\n    {\n      \"disabled\": false,\n      \"value\": \"Condo B\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        780
+      ],
+      "id": "15f519b0-269b-4d9d-8c7f-a535b58a7e22",
+      "name": "Create Custom Field Options (context)",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dltagg.atlassian.net/rest/api/3/issue",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"fields\": {\n    \"project\": {\n      \"id\": {{ $('Set Jira Data').item.json.project_id }}\n    },\n    \"issuetype\": {\n      \"id\": \"{{ $('Set Jira Data').item.json.issue_type_id }}\"\n    },\n    \"priority\": {\n      \"id\": \"{{ $json.priority }}\"\n    },\n    \"summary\": \"{{ $json.summary }}\",\n    \"description\": {\n      \"type\": \"doc\",\n      \"version\": 1,\n      \"content\": [\n        {\n          \"type\": \"paragraph\",\n          \"content\": [\n            {\n              \"text\": \"{{ $json.description }}\",\n              \"type\": \"text\"\n            }\n          ]\n        }\n      ]\n    },\n    \"customfield_10124\": {\n      \"id\": \"{{ $json.condominium }}\"\n    },\n    \"customfield_10192\": \"{{ $json.user_name }}\",\n    \"customfield_10191\": \"{{ $json.user_id }}\",\n    \"customfield_10190\": \"{{ $json.user_phone_number }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        560
+      ],
+      "id": "fe83fe73-94f2-4c0c-b041-482b2a27b41b",
+      "name": "Create Task",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('When Executed by Another Workflow').item.json.image.id }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        980,
+        120
+      ],
+      "id": "909aad6d-a4ed-4998-9ab4-b13a2a805577",
+      "name": "Get Image",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        120
+      ],
+      "id": "0cbbf697-92ec-49f6-a2a5-54ce13eef2ce",
+      "name": "Download Image",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        980,
+        800
+      ],
+      "id": "d3626bd4-1f89-4a4a-a0d6-912ca6722399",
+      "name": "Loop Over Images"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "chat_session_medias",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        800
+      ],
+      "id": "84f92f6b-1b33-4ac3-be6c-abab9252a40a",
+      "name": "Delete Chat Session Medias",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_session_medias (user_id, filename, mime_type, \"binary\")\nVALUES (\n  $1,\n  $2,\n  $3,\n  decode($4, 'base64')\n);",
+        "options": {
+          "queryReplacement": "={{ $('Set Chat Session Metadata').item.json.current_user.id }}, {{ $now.toUnixInteger() + '.' + $binary.data.fileExtension }}, {{ $binary.data.mimeType }}, {{ $json.data }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1640,
+        120
+      ],
+      "id": "4f0e2bc1-5d58-43e4-a675-db99748fa37a",
+      "name": "Insert Chat Session Images",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "949f6aa5-9cac-461e-9a7a-96597b792344",
+              "leftValue": "={{ $('When Executed by Another Workflow').item.json.message_type }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        260
+      ],
+      "id": "5ff36f62-8fae-4195-811a-dc14efebaf1f",
+      "name": "If is Media Type"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {
+          "keepSource": "binary"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        120
+      ],
+      "id": "bf96d966-cd0b-4c43-8017-6b2e9acb4fd3",
+      "name": "To Base64"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  csm.id,\n  csm.user_id,\n  csm.filename,\n  csm.mime_type,\n  encode(csm.binary, 'base64') as data\nFROM chat_session_medias csm\nWHERE csm.user_id = $1",
+        "options": {
+          "queryReplacement": "={{ $('Set Chat Session Metadata').item.json.current_user.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1640,
+        560
+      ],
+      "id": "87230a51-e62d-40b7-816a-0f73ed185e79",
+      "name": "Get Session Medias",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "={{ $json.filename }}",
+          "mimeType": "={{ $json.mime_type }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        1000
+      ],
+      "id": "7be8f65d-9514-4952-9963-8f73536a75e2",
+      "name": "To Binary"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d0f07a6b-449f-4094-8740-55b5fddc193f",
+              "name": "project_id",
+              "value": "10002",
+              "type": "string"
+            },
+            {
+              "id": "70f9d8a8-0345-4963-afa8-c0006a65cbce",
+              "name": "project_key",
+              "value": "NA",
+              "type": "string"
+            },
+            {
+              "id": "f096caf8-0d35-4578-a157-980749896507",
+              "name": "issue_type_id",
+              "value": "10011",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        380,
+        560
+      ],
+      "id": "146391b5-d867-4428-a282-45dcd387a556",
+      "name": "Set Jira Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb15139b-f1b3-46c4-a84e-12cab812f37d",
+              "name": "body",
+              "value": "=A ocorrência {{ $('Jira Ticket Moved to Done Trigger').item.json.issue.key }} referente a \"{{ $('Jira Ticket Moved to Done Trigger').item.json.issue.fields.summary }}\", que você notificou no dia {{ DateTime.fromISO($('Jira Ticket Moved to Done Trigger').item.json.issue.fields.attachment[0].created).format('dd/MM/yyyy') }}, foi resolvida!",
+              "type": "string"
+            },
+            {
+              "id": "13a1f3e2-305e-4982-8374-3f0bc38c37e2",
+              "name": "phone_number",
+              "value": "={{ $json.phone_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -600
+      ],
+      "id": "b0495ccb-75a6-41c9-80be-d566150022d4",
+      "name": "Ticket Moved to Done Response"
+    },
+    {
+      "parameters": {
+        "resource": "issueAttachment",
+        "issueKey": "={{ $('Create Task').first().json.key }}"
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        1000
+      ],
+      "id": "2995d36f-3db4-48db-ae1e-d2ded413c9bc",
+      "name": "Jira Attach Media to Task",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2db0ee59-04ad-4348-8bd3-1a1ba2180201",
+              "leftValue": "={{ $json.issue_event_type_name }}",
+              "rightValue": "issue_updated",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -660,
+        -600
+      ],
+      "id": "9aac04ec-8be9-48c9-8aea-d9c38cdc9823",
+      "name": "If issue_event_type is issue_updated"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If Needs to Update Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Chat Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "Set Chat Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Chat Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "Switch by Step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Metadata Data": {
+      "main": [
+        [
+          {
+            "node": "Set Chat Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Needs to Update Metadata": {
+      "main": [
+        [
+          {
+            "node": "Update Metadata Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Chat Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Jira Ticket Type Workflow": {
+      "main": [
+        [
+          {
+            "node": "List Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Quantity of Affected People Workflow": {
+      "main": [
+        [
+          {
+            "node": "List Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch by Step": {
+      "main": [
+        [
+          {
+            "node": "Set Next Sub Step to Get Number of People Affected",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Next Sub Step to Get Description",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Next Sub Step to Add more",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If More Context Provided",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Set Ticket Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Ticket Data": {
+      "main": [
+        [
+          {
+            "node": "Create Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira Ticket Moved to Done Trigger": {
+      "main": [
+        [
+          {
+            "node": "If issue_event_type is issue_updated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Ticket Moved to Done Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If More Context Provided": {
+      "main": [
+        [
+          {
+            "node": "If is Media Type",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Jira Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Description": {
+      "main": [
+        [
+          {
+            "node": "Add More Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Next Sub Step to Get Number of People Affected": {
+      "main": [
+        [
+          {
+            "node": "Execute Jira Ticket Type Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Next Sub Step to Get Description": {
+      "main": [
+        [
+          {
+            "node": "Execute Quantity of Affected People Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Next Sub Step to Add more": {
+      "main": [
+        [
+          {
+            "node": "Get Description Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Chat Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "Delete Chat Session Medias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Condominium": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task": {
+      "main": [
+        [
+          {
+            "node": "Get Session Medias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "To Base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Images": {
+      "main": [
+        [
+          {
+            "node": "Delete Chat Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "To Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Chat Session Medias": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Chat Session Images": {
+      "main": [
+        [
+          {
+            "node": "Append Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If is Media Type": {
+      "main": [
+        [
+          {
+            "node": "Get Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To Base64": {
+      "main": [
+        [
+          {
+            "node": "Insert Chat Session Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Session Medias": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To Binary": {
+      "main": [
+        [
+          {
+            "node": "Jira Attach Media to Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Jira Data": {
+      "main": [
+        [
+          {
+            "node": "Get Condominium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Moved to Done Response": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira Attach Media to Task": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If issue_event_type is issue_updated": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Jira Ticket Moved to Done Trigger": {
+      "webhookId": "431"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Jira Ticket Moved to Done Trigger": [
+      {
+        "json": {
+          "timestamp": 1743686551538,
+          "webhookEvent": "jira:issue_updated",
+          "issue_event_type_name": "issue_updated",
+          "user": {
+            "self": "https://dltagg.atlassian.net/rest/api/2/user?accountId=712020%3A2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+            "accountId": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+              "24x24": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+              "16x16": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+              "32x32": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png"
+            },
+            "displayName": "Luiz Felipe Muniz Moura",
+            "active": true,
+            "timeZone": "America/Sao_Paulo",
+            "accountType": "atlassian"
+          },
+          "issue": {
+            "id": "10363",
+            "self": "https://dltagg.atlassian.net/rest/api/2/10363",
+            "key": "NA-30",
+            "fields": {
+              "statuscategorychangedate": "2025-04-03T10:22:31.047-0300",
+              "issuetype": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/issuetype/10011",
+                "id": "10011",
+                "description": "A task that needs to be done.",
+                "iconUrl": "https://dltagg.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10678?size=medium",
+                "name": "Task",
+                "subtask": false,
+                "avatarId": 10678,
+                "hierarchyLevel": 0
+              },
+              "customfield_10190": "5511976217868",
+              "customfield_10191": "1",
+              "customfield_10192": "Luiz Muniz Moura",
+              "timespent": null,
+              "customfield_10030": null,
+              "project": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/project/10002",
+                "id": "10002",
+                "key": "NA",
+                "name": "n8n Agent",
+                "projectTypeKey": "software",
+                "simplified": false,
+                "avatarUrls": {
+                  "48x48": "https://dltagg.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419",
+                  "24x24": "https://dltagg.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=small",
+                  "16x16": "https://dltagg.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=xsmall",
+                  "32x32": "https://dltagg.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=medium"
+                }
+              },
+              "customfield_10031": null,
+              "customfield_10032": null,
+              "fixVersions": [],
+              "statusCategory": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Complete"
+              },
+              "customfield_10034": null,
+              "aggregatetimespent": null,
+              "resolution": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/resolution/10000",
+                "id": "10000",
+                "description": "Work has been completed on this issue.",
+                "name": "Done"
+              },
+              "customfield_10035": null,
+              "customfield_10037": null,
+              "customfield_10027": null,
+              "customfield_10028": null,
+              "customfield_10029": null,
+              "resolutiondate": "2025-04-03T10:22:31.014-0300",
+              "workratio": -1,
+              "watches": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/issue/NA-30/watchers",
+                "watchCount": 1,
+                "isWatching": true
+              },
+              "lastViewed": "2025-04-03T10:22:07.380-0300",
+              "created": "2025-04-03T10:21:39.480-0300",
+              "customfield_10020": null,
+              "customfield_10021": null,
+              "customfield_10022": null,
+              "priority": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/priority/3",
+                "iconUrl": "https://dltagg.atlassian.net/images/icons/priorities/medium_new.svg",
+                "name": "Medium",
+                "id": "3"
+              },
+              "customfield_10023": null,
+              "customfield_10024": null,
+              "customfield_10025": null,
+              "labels": [],
+              "customfield_10026": "10007_*:*_1_*:*_51566_*|*_10009_*:*_1_*:*_0",
+              "customfield_10016": null,
+              "customfield_10017": null,
+              "customfield_10018": {
+                "hasEpicLinkFieldDependency": false,
+                "showField": false,
+                "nonEditableReason": {
+                  "reason": "EPIC_LINK_SHOULD_BE_USED",
+                  "message": "Para definir um epic como pai, use o link de epic"
+                }
+              },
+              "customfield_10019": "0|i00047:0009",
+              "timeestimate": null,
+              "aggregatetimeoriginalestimate": null,
+              "versions": [],
+              "issuelinks": [],
+              "assignee": null,
+              "updated": "2025-04-03T10:22:31.538-0300",
+              "status": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/status/10009",
+                "description": "",
+                "iconUrl": "https://dltagg.atlassian.net/",
+                "name": "Done",
+                "id": "10009",
+                "statusCategory": {
+                  "self": "https://dltagg.atlassian.net/rest/api/2/statuscategory/3",
+                  "id": 3,
+                  "key": "done",
+                  "colorName": "green",
+                  "name": "Complete"
+                }
+              },
+              "components": [],
+              "timeoriginalestimate": null,
+              "description": "As luzes do corredor do piso 3 não acendem, não aparentam estar queimadas mas sim ser um problema geral Um exemplo das luzes que não estão funcionando",
+              "customfield_10010": null,
+              "customfield_10014": null,
+              "customfield_10058": null,
+              "timetracking": {},
+              "customfield_10015": null,
+              "customfield_10005": null,
+              "customfield_10049": null,
+              "customfield_10006": null,
+              "security": null,
+              "customfield_10007": null,
+              "customfield_10008": null,
+              "customfield_10009": null,
+              "attachment": [
+                {
+                  "self": "https://dltagg.atlassian.net/rest/api/2/attachment/10066",
+                  "id": "10066",
+                  "filename": "File.jpg",
+                  "author": {
+                    "self": "https://dltagg.atlassian.net/rest/api/2/user?accountId=712020%3A2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                    "accountId": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                    "avatarUrls": {
+                      "48x48": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                      "24x24": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                      "16x16": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                      "32x32": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png"
+                    },
+                    "displayName": "Luiz Felipe Muniz Moura",
+                    "active": true,
+                    "timeZone": "America/Sao_Paulo",
+                    "accountType": "atlassian"
+                  },
+                  "created": "2025-04-03T10:21:41.587-0300",
+                  "size": 84857,
+                  "mimeType": "image/jpeg",
+                  "content": "https://dltagg.atlassian.net/rest/api/2/attachment/content/10066",
+                  "thumbnail": "https://dltagg.atlassian.net/rest/api/2/attachment/thumbnail/10066"
+                }
+              ],
+              "aggregatetimeestimate": null,
+              "summary": "Problema Geral nas Luzes do Corredor do Piso 3",
+              "creator": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/user?accountId=712020%3A2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                "accountId": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "24x24": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "16x16": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "32x32": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png"
+                },
+                "displayName": "Luiz Felipe Muniz Moura",
+                "active": true,
+                "timeZone": "America/Sao_Paulo",
+                "accountType": "atlassian"
+              },
+              "subtasks": [],
+              "customfield_10040": null,
+              "customfield_10041": null,
+              "customfield_10042": [],
+              "reporter": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/user?accountId=712020%3A2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                "accountId": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "24x24": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "16x16": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png",
+                  "32x32": "https://secure.gravatar.com/avatar/c08ef181a2584e0b9bad127db8d8c4a3?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FLM-4.png"
+                },
+                "displayName": "Luiz Felipe Muniz Moura",
+                "active": true,
+                "timeZone": "America/Sao_Paulo",
+                "accountType": "atlassian"
+              },
+              "customfield_10043": null,
+              "customfield_10044": null,
+              "aggregateprogress": {
+                "progress": 0,
+                "total": 0
+              },
+              "customfield_10001": null,
+              "customfield_10045": null,
+              "customfield_10046": null,
+              "customfield_10002": [],
+              "customfield_10047": null,
+              "customfield_10124": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/customFieldOption/10089",
+                "value": "Condo B",
+                "id": "10089"
+              },
+              "customfield_10003": null,
+              "customfield_10004": null,
+              "customfield_10048": null,
+              "environment": null,
+              "duedate": null,
+              "progress": {
+                "progress": 0,
+                "total": 0
+              },
+              "votes": {
+                "self": "https://dltagg.atlassian.net/rest/api/2/issue/NA-30/votes",
+                "votes": 0,
+                "hasVoted": false
+              }
+            }
+          },
+          "changelog": {
+            "id": "10465",
+            "items": [
+              {
+                "field": "Rank",
+                "fieldtype": "custom",
+                "fieldId": "customfield_10019",
+                "from": "",
+                "fromString": "",
+                "to": "",
+                "toString": "Ranked higher"
+              }
+            ]
+          },
+          "triggeredByUser": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42"
+        }
+      }
+    ],
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "message_type": "image",
+          "message_body": "Um exemplo das luzes que não estão funcionando",
+          "current_user": {
+            "id": "1",
+            "user_type_id": "1",
+            "condominium_id": "1LOLzPfGPmHxr_NcZjh3X9WOL1mM1Cnuj",
+            "nif": "123456789",
+            "name": "Luiz Muniz Moura",
+            "phone_number": "5511976217868",
+            "birthdate": null,
+            "jira_id": "712020:2dc14321-e4a9-4035-a1a5-ea5a187ece42",
+            "condominium_name": "Condo A",
+            "active_session_type": "create_ticket"
+          },
+          "image": {
+            "caption": "Um exemplo das luzes que não estão funcionando",
+            "mime_type": "image/jpeg",
+            "sha256": "BQVS/B06NlbMLby0K+JYajITqTNoweNJMEUNC/P6Ppg=",
+            "id": "3016164691878784"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "391d9616-10a3-4442-9140-8e42452dc568",
+  "triggerCount": 1,
+  "tags": []
+}

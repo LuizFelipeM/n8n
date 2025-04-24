@@ -1,0 +1,1626 @@
+{
+  "createdAt": "2025-02-26T22:36:50.812Z",
+  "updatedAt": "2025-04-23T11:36:15.341Z",
+  "id": "44mBTPOhCDeUkjmK",
+  "name": "Ingest Files",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cfeac627-1707-4f3f-b44a-e0920040121d",
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "application/vnd.google-apps.spreadsheet",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Google Spreadsheet"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4b8b4224-256c-4226-8db1-f29d8fdfeccb",
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "XLSX"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ae23c5e3-3688-4207-9fcd-9b7a04196dca",
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "text/csv",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CSV"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f1f70b1f-d391-4794-a113-5d129a3d56e4",
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DOCX"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5a096be4-1483-4fd0-a59e-71e779edc9d0",
+                    "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+                    "rightValue": "text/html",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HTML"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        580,
+        140
+      ],
+      "id": "dbf8b661-4a71-44f6-9feb-c4b4c534d6eb",
+      "name": "Switch by File type"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        220
+      ],
+      "id": "bc8b4af9-d24c-4b24-85a6-ba04910f562e",
+      "name": "Extract from Doc"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        380
+      ],
+      "id": "1bfeafd7-cc33-481f-abed-1826021a3941",
+      "name": "Extract from PDF"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        -140
+      ],
+      "id": "abcf8563-dac8-4676-b902-067d544a8fe9",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data || $json.text || $json.concatenated_data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "condominium_id",
+                "value": "={{ $('Loop Over Items').item.json.parents[0] }}"
+              },
+              {
+                "name": "file_id",
+                "value": "={{ $('Loop Over Items').item.json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "9e876a00-1fcc-4fac-94dc-fb7d23d52663",
+      "name": "Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -380
+      ],
+      "id": "8303e8c6-ac39-4cf3-bf5b-fd2a9bf05d1c",
+      "name": "Extract Residents from XLSX"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Set File Info').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        380,
+        200
+      ],
+      "id": "96688502-e721-4b44-85c4-e0f74cf37703",
+      "name": "Download File",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1100,
+        200
+      ],
+      "id": "23c21eef-83d0-4c66-9c52-4634eaf9e9fa",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "condominium_documents",
+        "filterType": "string",
+        "filterString": "=metadata->>file_id=like.*{{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        200
+      ],
+      "id": "a401244c-deb8-4d56-a89a-c90ab88285bc",
+      "name": "Delete Old Docs",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "users",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "nif",
+              "fieldValue": "={{ $('If Resident Info is filled').item.json.NIF }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('If Resident Info is filled').item.json.Nome }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('If Resident Info is filled').item.json['Número de Telefone'] }}"
+            },
+            {
+              "fieldId": "birthdate",
+              "fieldValue": "={{ $('If Resident Info is filled').item.json['Data de nascimento'] }}"
+            },
+            {
+              "fieldId": "condominium_id",
+              "fieldValue": "={{ $('Loop Over Items').item.json.parents[0] }}"
+            },
+            {
+              "fieldId": "user_type_id",
+              "fieldValue": "1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        -380
+      ],
+      "id": "a2c5fa62-0065-4c84-a1cb-a686ce721778",
+      "name": "Create User",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        200
+      ],
+      "id": "199dc2a0-27f0-492d-a843-5b26539a5173",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7f888d79-c1a1-4ac9-ab1a-afe72b459d1f",
+              "leftValue": "={{ $binary.data.fileName }}",
+              "rightValue": "moradores",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        -140
+      ],
+      "id": "b8833e62-38ed-4937-847f-3bac3515704d",
+      "name": "If is Moradores file"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a3a5589f-c300-4f27-bcdb-dc1aa137dd9d",
+              "leftValue": "={{ $json.NIF }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6152ba53-f9e3-4886-884b-a5a1f46cadbb",
+              "leftValue": "={{ $json.Nome }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5e29a1ba-b2fe-45b3-a126-7d68399544c9",
+              "leftValue": "={{ $json['Número de Telefone'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        -380
+      ],
+      "id": "4ce906bf-99dc-438f-81e8-cc84caebe38c",
+      "name": "If Resident Info is filled"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        60
+      ],
+      "id": "c5b8872d-f0e0-4685-8c4e-7f6388825c40",
+      "name": "Extract from CSV"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "condominium_document_rows",
+          "mode": "list",
+          "cachedResultName": "condominium_document_rows"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "dataset_id": "={{ $('Set File Info').item.json.file_id }}",
+            "row_data": "={{ $json.toJsonString().replaceAll(/'/g, \"''\") }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "dataset_id",
+              "displayName": "dataset_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_data",
+              "displayName": "row_data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1420,
+        200
+      ],
+      "id": "c6a30da4-0022-478a-b1fd-7ca4e5cfa9d2",
+      "name": "Insert Table Rows",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "condominium_document_metadata",
+          "mode": "list",
+          "cachedResultName": "condominium_document_metadata"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Set File Info').item.json.id }}",
+            "schema": "={{ $json.schema }}",
+            "title": "={{ $if($('Set File Info').item.json.mimeType == \"text/csv\", $('Set File Info').item.json.title, $('Set File Info').item.json.title + \" página \" + $('Loop Over Sheets').item.json.sheetName) }}",
+            "url": "={{ $('Set File Info').item.json.url }}",
+            "created_at": "={{ $now.toUTC() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "schema",
+              "displayName": "schema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1940,
+        -140
+      ],
+      "id": "146d22c1-a8b2-42c8-aca0-addba26b61ff",
+      "name": "Update Schema for Document Metadata",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c44f00c8-eab2-4365-9ea9-96ba855c5525",
+              "name": "schema",
+              "value": "={{ $json.concatenated_data.parseJson().first().keys().toJsonString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1740,
+        -140
+      ],
+      "id": "8125aacb-e900-471e-bd18-fca730a65dde",
+      "name": "Set Schema"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8bb36e20-b979-49df-9699-5d2b21df28e0",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "cb89a56e-8c16-43a2-bc15-8b74329a193d",
+              "name": "mimeType",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "c7ccd187-acea-4dfa-8872-dbc062859a52",
+              "name": "url",
+              "value": "={{ $json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "0c53b762-5b75-408d-afeb-1fba7722d4a6",
+              "name": "title",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -600,
+        200
+      ],
+      "id": "42372ebb-cee1-4c57-bdb6-bc80ef8c7801",
+      "name": "Set File Info"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "b491e7fd-7c06-4788-9651-a74ba2fbbd67",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        720
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "6VoSug2Bcrcb4Pd3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "condominium_documents",
+          "mode": "list",
+          "cachedResultName": "condominium_documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "3961accd-93a1-49f0-bc90-68cf0aff378e",
+      "name": "Insert into Supabase Vectorstore",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        520
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        540
+      ],
+      "id": "3d171377-c64d-427a-8c8c-90ac35d9cb7e",
+      "name": "Extract from HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "const XLSX = require('xlsx');\n\nconst data = $input.first().binary.data\n\nconst workbook = XLSX.read(data.data)\n\n\nconst result = workbook.SheetNames.map((sheetName) => {\n  return {\n    sheetName,\n    data: XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])\n  }\n  // return {\n  //   mimeType: \"text/html\",\n  //   fileName: sheetName,\n  //   data: new Buffer(XLSX.utils.sheet_to_html(workbook.Sheets[sheetName])).toString('base64')\n  // }\n})\n\nreturn result"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -580
+      ],
+      "id": "5b43e848-0450-4750-a0c9-311b5e858c80",
+      "name": "Sheet Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "469d5320-0009-4bc6-8821-25ebbdc19123",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d0ed2ca8-7933-4e09-a660-2a0d432b8e32",
+              "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+              "rightValue": "text/csv",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2140,
+        -140
+      ],
+      "id": "d2f7bc48-7868-4534-afd2-55f1ad5a1a51",
+      "name": "If is XLSX"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -140
+      ],
+      "id": "3525a5df-7176-4442-a897-3e1e30d26f0b",
+      "name": "Loop Over Sheets"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        60
+      ],
+      "id": "2f9b89a1-43af-4f8f-9f8b-c78e8b61e7c6",
+      "name": "Aggregate Rows"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "condominium_document_rows",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "dataset_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Set File Info').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        200
+      ],
+      "id": "347b4eaf-5c6e-4d8b-8f5d-388d479ea24b",
+      "name": "Delete Data Rows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "condominium_document_metadata",
+          "mode": "list",
+          "cachedResultName": "condominium_document_metadata"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Set File Info').item.json.id }}",
+            "title": "={{ $('Set File Info').item.json.title }}",
+            "url": "={{ $('Set File Info').item.json.url }}",
+            "created_at": "={{ $now.toUTC() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "schema",
+              "displayName": "schema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        200,
+        320
+      ],
+      "id": "b3344102-717a-4348-8f6a-b0489bf7ecee",
+      "name": "Insert Document Metadata",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fb8193ba-70de-448f-8fc1-9b15a2f39b6f",
+              "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+              "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "98e5c170-360f-438f-8cc8-992dcaac02ba",
+              "leftValue": "={{ $('Set File Info').item.json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.spreadsheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        200
+      ],
+      "id": "3bcbf5fa-937d-438c-b48f-ab5597528a96",
+      "name": "If is XLSX file"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dltagg.atlassian.net/rest/api/3/user",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"emailAddress\": \"{{ $json['E-mail'] }}\",\n  \"displayName\": \"{{ $json.Nome }}\",\n  \"name\": \"{{ $json.Nome }}\",\n  \"notification\": false,\n  \"sendNotification\": false,\n  \"sendInvitation\": false,\n  \"products\": []\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        -380
+      ],
+      "id": "6703bb5c-9256-48fe-a695-cc611892a3ca",
+      "name": "Create Jira User",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://europe-west9-whatsapp-chatbot-455817.cloudfunctions.net/xlsx-sheet-splitter-574238883112/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        -140
+      ],
+      "id": "d55cf5ee-13d5-4cb9-a8ee-65f9d6acfb06",
+      "name": "XLSX Sheet Splitter",
+      "credentials": {
+        "googleApi": {
+          "id": "uSJtTYw4jwEwPA2l",
+          "name": "Google Service Account account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Switch by File type": {
+      "main": [
+        [
+          {
+            "node": "If is Moradores file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If is Moradores file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from CSV",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from Doc",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Doc": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Set Schema",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Residents from XLSX": {
+      "main": [
+        [
+          {
+            "node": "If Resident Info is filled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Switch by File type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Docs": {
+      "main": [
+        [
+          {
+            "node": "Delete Data Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Set File Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create User": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If is Moradores file": {
+      "main": [
+        [
+          {
+            "node": "Extract Residents from XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "XLSX Sheet Splitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Resident Info is filled": {
+      "main": [
+        [
+          {
+            "node": "Create Jira User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from CSV": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Rows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert Table Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Schema": {
+      "main": [
+        [
+          {
+            "node": "Update Schema for Document Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Info": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into Supabase Vectorstore": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from HTML": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet Splitter": {
+      "main": [
+        []
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Schema for Document Metadata": {
+      "main": [
+        [
+          {
+            "node": "If is XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If is XLSX": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Sheets": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert Table Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Rows": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Data Rows": {
+      "main": [
+        [
+          {
+            "node": "If is XLSX file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Document Metadata": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If is XLSX file": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert Document Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Jira User": {
+      "main": [
+        [
+          {
+            "node": "Create User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XLSX Sheet Splitter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "copyRequiresWriterPermission": false,
+          "writersCanShare": true,
+          "viewedByMe": true,
+          "mimeType": "application/vnd.google-apps.spreadsheet",
+          "exportLinks": {
+            "application/x-vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=ods",
+            "text/tab-separated-values": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=tsv",
+            "application/pdf": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=pdf",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=xlsx",
+            "text/csv": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=csv",
+            "application/zip": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=zip",
+            "application/vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88&exportFormat=ods"
+          },
+          "parents": [
+            "1xUTzzX6Xt0fwA91sl7SEDRGBAq8QTxY5"
+          ],
+          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBNB2LTDAshVdkW_XRCtT0MFWW0pB1KeFFonzYKrPu25lmrPCAoBMQoprojheNh1ewZjUT9IIylY3hBoD42kQ986tXOkmSAziIb8iO5EfF4FB_j0u_Xzd4f6_ZAhNg=s220",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet",
+          "shared": false,
+          "lastModifyingUser": {
+            "displayName": "Luiz Moura",
+            "kind": "drive#user",
+            "me": true,
+            "permissionId": "13222640052300274131",
+            "emailAddress": "luiz.moura@dltagg.com",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64"
+          },
+          "owners": [
+            {
+              "displayName": "Luiz Moura",
+              "kind": "drive#user",
+              "me": true,
+              "permissionId": "13222640052300274131",
+              "emailAddress": "luiz.moura@dltagg.com",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64"
+            }
+          ],
+          "webViewLink": "https://docs.google.com/spreadsheets/d/1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88/edit?usp=drivesdk",
+          "size": "4605",
+          "viewersCanCopyContent": true,
+          "permissions": [
+            {
+              "id": "13222640052300274131",
+              "displayName": "Luiz Moura",
+              "type": "user",
+              "kind": "drive#permission",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64",
+              "emailAddress": "luiz.moura@dltagg.com",
+              "role": "owner",
+              "deleted": false,
+              "pendingOwner": false
+            }
+          ],
+          "hasThumbnail": true,
+          "spaces": [
+            "drive"
+          ],
+          "id": "1rM2F1Sfp1Dv3WqJE5S26kjArsmdOokex_gy4XYaNy88",
+          "name": "Cópia de Informes 2024",
+          "starred": false,
+          "trashed": false,
+          "explicitlyTrashed": false,
+          "createdTime": "2025-04-15T00:41:45.966Z",
+          "modifiedTime": "2025-04-15T00:41:45.966Z",
+          "modifiedByMeTime": "2025-04-15T00:41:45.966Z",
+          "viewedByMeTime": "2025-04-15T00:41:45.966Z",
+          "quotaBytesUsed": "4605",
+          "version": "5",
+          "ownedByMe": true,
+          "isAppAuthorized": false,
+          "capabilities": {
+            "canChangeViewersCanCopyContent": true,
+            "canEdit": true,
+            "canCopy": true,
+            "canComment": true,
+            "canAddChildren": false,
+            "canDelete": true,
+            "canDownload": true,
+            "canListChildren": false,
+            "canRemoveChildren": false,
+            "canRename": true,
+            "canTrash": true,
+            "canReadRevisions": true,
+            "canChangeCopyRequiresWriterPermission": true,
+            "canMoveItemIntoTeamDrive": true,
+            "canUntrash": true,
+            "canModifyContent": true,
+            "canMoveItemOutOfDrive": true,
+            "canAddMyDriveParent": false,
+            "canRemoveMyDriveParent": true,
+            "canMoveItemWithinDrive": true,
+            "canShare": true,
+            "canMoveChildrenWithinDrive": false,
+            "canModifyContentRestriction": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canAcceptOwnership": false,
+            "canReadLabels": false,
+            "canModifyLabels": false,
+            "canModifyEditorContentRestriction": true,
+            "canModifyOwnerContentRestriction": true,
+            "canRemoveContentRestriction": false,
+            "canDisableInheritedPermissions": false,
+            "canEnableInheritedPermissions": true
+          },
+          "thumbnailVersion": "1",
+          "modifiedByMe": true,
+          "permissionIds": [
+            "13222640052300274131"
+          ],
+          "linkShareMetadata": {
+            "securityUpdateEligible": false,
+            "securityUpdateEnabled": true
+          },
+          "inheritedPermissionsDisabled": false
+        }
+      }
+    ]
+  },
+  "versionId": "98fa5d89-f02d-4999-bdd9-4eb924f799c2",
+  "triggerCount": 0,
+  "tags": []
+}

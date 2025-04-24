@@ -1,0 +1,872 @@
+{
+  "createdAt": "2025-03-18T11:34:00.673Z",
+  "updatedAt": "2025-04-23T11:35:48.569Z",
+  "id": "Q8lK9HueYnQciQhK",
+  "name": "Default Answers",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "25eb4c1d-8281-4a2f-ae5e-1a6f7e74214d",
+              "name": "body",
+              "value": "Infelizmente não consigo processar mensagens que não sejam de texto.\nPor favor, envie somente mensagens de texto. Obrigado!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        -60
+      ],
+      "id": "d06697fb-2bbc-4fc2-aa4a-ac54083d7327",
+      "name": "Not Supported Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40d88cf7-c208-4d6b-b2a2-e5c19262103d",
+              "name": "body",
+              "value": "Olá, seja bem vindo ao WhatsApp para assistência da Mistercondo.\\nDeseja conhecer mais da Mistercondo? Acesse o nosso site agora mesmo e confira nossas soluções para o seu condomínio.\\n\\nCaso tenha mudado de número ou seja novo, por favor, entre em contato com o administrador do seu condomínio e solicite seu cadastro ou alteração de número.",
+              "type": "string"
+            },
+            {
+              "id": "2a61155c-6118-4d16-98d4-b39c76ae3e63",
+              "name": "type",
+              "value": "reply_buttons",
+              "type": "string"
+            },
+            {
+              "id": "196a1090-4ffa-4aca-ace3-945f22e4697f",
+              "name": "reply_buttons",
+              "value": "[\n  {\n    \"id\": \"ask_for_proposal\",\n    \"title\": \"Pedir Proposta\"\n  },\n  {\n    \"id\": \"talk_to_sales\",\n    \"title\": \"Falar com Comercial\"\n  }\n]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        320
+      ],
+      "id": "56aaacff-10d4-4616-92dd-4558c44633d5",
+      "name": "Information Not Found Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10d95703-6ee1-4565-bb82-8b3146f15574",
+              "name": "body",
+              "value": "=Olá {{ $json.current_user.name }}, como posso te ajudar?",
+              "type": "string"
+            },
+            {
+              "id": "fc44f5f3-f27e-4c90-b037-309efa61ca27",
+              "name": "type",
+              "value": "reply_buttons",
+              "type": "string"
+            },
+            {
+              "id": "a83a4bb1-2fc5-4e6e-b6d3-184547299241",
+              "name": "reply_buttons",
+              "value": "[\n  {\n    \"id\": \"ask_questions\",\n    \"title\": \"Tirar dúvidas\"\n  },\n  {\n    \"id\": \"create_ticket\",\n    \"title\": \"Pedir assistência\"\n  }\n]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        -240
+      ],
+      "id": "e1a6b663-eb53-4b7d-8712-385871844604",
+      "name": "Initial Response"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"message_type\": \"initial\",\n  \"message_id\": \"ask_for_proposal\",\n  \"message_body\": \"\",\n  \"phone_number\": \"123456789\",\n  \"system_phone_number_id\": \"123456789\",\n  \"current_user\": {\n    \"id\": 123,\n    \"name\": \"Luiz\"\n  }\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        240
+      ],
+      "id": "4d24692d-b3ee-464c-9f00-05ff5dd11f84",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40d88cf7-c208-4d6b-b2a2-e5c19262103d",
+              "name": "body",
+              "value": "Olá, seja bem vindo ao WhatsApp para assistência da Mistercondo.\nDeseja conhecer mais da Mistercondo? Acesse o nosso site agora mesmo e confira nossas soluções para o seu condomínio.\n\nCaso tenha mudado de número ou seja novo, por favor, entre em contato com o administrador do seu condomínio e solicite seu cadastro ou alteração de número.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        420,
+        320
+      ],
+      "id": "13841124-6f84-458f-ae00-41d2bbb26360",
+      "name": "Information Not Found Response1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_session_metadata",
+          "mode": "list",
+          "cachedResultName": "chat_session_metadata"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('When Executed by Another Workflow').item.json.phone_number }}",
+            "active_session_type": "={{ $json.message_id }}",
+            "last_interaction_time": "={{ $now.toUTC() }}",
+            "data": "{}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "active_session_type",
+              "displayName": "active_session_type",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "last_interaction_time",
+              "displayName": "last_interaction_time",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -40,
+        700
+      ],
+      "id": "143f4636-81dc-4328-a2c1-4001faca6990",
+      "name": "Upsert chat_session_metadata",
+      "credentials": {
+        "postgres": {
+          "id": "kk3GzlPM31emTAt8",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "initial",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Initial"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "358153d8-77d5-4919-8d7f-44a32d1b5aac",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "not_supported",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Not Supported"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d47ab0c1-dddc-4362-a112-23cf0c9d20f6",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "information_not_found.text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Information Not Found - Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "887792b7-41aa-45da-82df-5734788dbe23",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "=information_not_found.button_reply",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Information Not Found - Option Selected"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -580,
+        220
+      ],
+      "id": "a77d7363-3ffe-4df8-9998-469b383bb55d",
+      "name": "Switch by message_type"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1ae68205-1d46-4b90-a22e-385102d47d09",
+                    "leftValue": "={{ $json.message_id }}",
+                    "rightValue": "talk_to_sales",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Talk to sales"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message_id }}",
+                    "rightValue": "ask_for_proposal",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ask for proposal"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -280,
+        580
+      ],
+      "id": "bd4d90d5-029a-4274-bb29-6533e9b04ccb",
+      "name": "Switch by message_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8608fb8-9159-4aad-842c-44c2312fc5ef",
+              "name": "body",
+              "value": "Repassei o seu contato para o time comercial. Eles entraram em contato assim que possível.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        420,
+        520
+      ],
+      "id": "d1d0bbc7-4077-45c8-be7b-b27a7dd5cf71",
+      "name": "Talk to sales Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dee47078-4c63-457b-8785-4aed361d9e26",
+              "name": "body",
+              "value": "Por favor, responda as seguintes perguntas para que possamos montar a sua cotação:\n- Ano de construção\n- Numero de Frações\n- Numero de Andares\n- Despesas 2024\n- Orçamento 2025\n- Fracoes com dividas\n- Valor total divida\n- Porteiro sim/nao\n- Garagem sim/nao",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        700
+      ],
+      "id": "1a10ea7f-75d8-4555-b458-5fceb563e7a0",
+      "name": "Ask for condominium details Response"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "chat_session_metadata",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.phone_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        280
+      ],
+      "id": "de1dca72-a0a4-4337-b28f-abfd414b859b",
+      "name": "Get Session Metadata",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e9a8abc6-a070-4813-a090-7ef470ad2939",
+              "name": "body",
+              "value": "=O número {{ $('When Executed by Another Workflow').item.json.phone_number }} fez uma solicitação para falar diretamente com o time Comercial.\n\nFale diretamente com ele no WhatsApp pelo link https://wa.me/{{ $('When Executed by Another Workflow').item.json.phone_number }}?text=Ol%C3%A1%2C%20tudo%20bem%3F%0AFa%C3%A7o%20parte%20do%20time%20comercial%20da%20MisterCondo%2C%20como%20posso%20ajudar%20hoje%3F",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -40,
+        520
+      ],
+      "id": "f7bfd16c-d387-40a8-ab41-617a9546be85",
+      "name": "MisterCondo - Talk to sales Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "efa32620-e775-41b5-82d9-2f2ed655e3f9",
+              "name": "body",
+              "value": "=O número {{ $('When Executed by Another Workflow').item.json.phone_number }} fez uma solicitação de proposta para os detalhes abaixo.\n\nFale diretamente com ele no WhatsApp pelo link https://wa.me/{{ $('When Executed by Another Workflow').item.json.phone_number }}?text=Ol%C3%A1%2C%20tudo%20bem%3F%0AFa%C3%A7o%20parte%20do%20time%20comercial%20da%20MisterCondo%2C%20como%20posso%20ajudar%20hoje%3F\n\nInformações fornecidas:\n{{ $('When Executed by Another Workflow').item.json.message_body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        120
+      ],
+      "id": "64743b57-6fb6-45f3-bc43-49c41adb3e11",
+      "name": "MisterCondo - Ask for proposal Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fbffac5e-b596-40c0-a13e-c4f9f90917b4",
+              "leftValue": "={{ $json.phone_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        280
+      ],
+      "id": "9f8632e8-a394-4e08-9bec-5bdc91841374",
+      "name": "If has session_metadata"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "={{ $('When Executed by Another Workflow').item.json.system_phone_number_id }}",
+        "recipientPhoneNumber": "5511976217868",
+        "textBody": "={{ $json.body }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        420,
+        120
+      ],
+      "id": "2e2718c8-2a6f-40bf-84f1-2838802e86d8",
+      "name": "MisterCondo - WhatsApp Contact",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "={{ $('When Executed by Another Workflow').item.json.system_phone_number_id }}",
+        "recipientPhoneNumber": "5511976217868",
+        "textBody": "={{ $json.body }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        200,
+        520
+      ],
+      "id": "33e67ee3-b4a3-4c78-b07f-27986eca8339",
+      "name": "MisterCondo - WhatsApp Contact 1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "N8TZ2ODxDMt1LURE",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "chat_session_metadata",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "condition": "eq",
+              "keyValue": "={{ $('When Executed by Another Workflow').item.json.phone_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        640,
+        120
+      ],
+      "id": "0c14a4a0-cfd5-46da-bf33-3c475ff512cb",
+      "name": "Delete Session Metadata",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8608fb8-9159-4aad-842c-44c2312fc5ef",
+              "name": "body",
+              "value": "Repassei as informações que forneceu e seu contato para o time comercial.\nEles entraram em contato assim que possível.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        120
+      ],
+      "id": "e3917adf-abac-4e4f-8d59-4ce8f3b39659",
+      "name": "Ask for proposal Response"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Switch by message_type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Not Supported Response": {
+      "main": [
+        []
+      ]
+    },
+    "Initial Response": {
+      "main": [
+        []
+      ]
+    },
+    "Information Not Found Response": {
+      "main": [
+        [
+          {
+            "node": "Information Not Found Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert chat_session_metadata": {
+      "main": [
+        [
+          {
+            "node": "Ask for condominium details Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch by message_type": {
+      "main": [
+        [
+          {
+            "node": "Initial Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Supported Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch by message_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch by message_id": {
+      "main": [
+        [
+          {
+            "node": "MisterCondo - Talk to sales Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upsert chat_session_metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "If has session_metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MisterCondo - Talk to sales Response": {
+      "main": [
+        [
+          {
+            "node": "MisterCondo - WhatsApp Contact 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MisterCondo - Ask for proposal Response": {
+      "main": [
+        [
+          {
+            "node": "MisterCondo - WhatsApp Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If has session_metadata": {
+      "main": [
+        [
+          {
+            "node": "MisterCondo - Ask for proposal Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Information Not Found Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MisterCondo - WhatsApp Contact 1": {
+      "main": [
+        [
+          {
+            "node": "Talk to sales Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MisterCondo - WhatsApp Contact": {
+      "main": [
+        [
+          {
+            "node": "Delete Session Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Session Metadata": {
+      "main": [
+        [
+          {
+            "node": "Ask for proposal Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "message_type": "information_not_found.text",
+          "message_body": "- Ano de construção: 2024\n- Numero de Frações: 1200\n- Numero de Andares: 3\n- Despesas 2024: R$200\n- Orçamento 2025: R$300\n- Fracoes com dividas: 600\n- Valor total divida: R$100\n- Porteiro sim/nao: não\n- Garagem sim/nao: sim",
+          "phone_number": "5511976217868",
+          "system_phone_number_id": "615396718313030",
+          "current_user": {}
+        }
+      }
+    ]
+  },
+  "versionId": "e9a6f5a5-1d78-454e-ae90-6c3b506f5476",
+  "triggerCount": 0,
+  "tags": []
+}

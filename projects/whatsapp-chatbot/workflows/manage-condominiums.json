@@ -1,0 +1,995 @@
+{
+  "createdAt": "2025-02-26T23:26:49.549Z",
+  "updatedAt": "2025-04-15T00:41:02.672Z",
+  "id": "kDn3fy9TjZLqHPvD",
+  "name": "Manage Condominiums",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1ngZmnnMroKObJFp58b2YNPOHtv4dT4xO",
+          "mode": "list",
+          "cachedResultName": "Condomínios",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ngZmnnMroKObJFp58b2YNPOHtv4dT4xO"
+        },
+        "event": "folderCreated"
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -140
+      ],
+      "id": "ea54a4ef-1b45-41e9-bb0d-695214e4e04a",
+      "name": "Folder Created",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1ngZmnnMroKObJFp58b2YNPOHtv4dT4xO",
+          "mode": "list",
+          "cachedResultName": "Condomínios",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ngZmnnMroKObJFp58b2YNPOHtv4dT4xO"
+        },
+        "event": "folderUpdated"
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        20,
+        560
+      ],
+      "id": "0ce8b35e-097b-4991-be42-b1da5d6e9759",
+      "name": "Folder Updated",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "condominiums",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "id",
+              "fieldValue": "={{ $json.folder_id }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -140
+      ],
+      "id": "2db8c61c-4724-4a25-96e8-a28f1dd3b054",
+      "name": "Create Condominium",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "condominiums",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.folder_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        380,
+        560
+      ],
+      "id": "83982d38-c0d7-419c-9b2e-c1a1ccdf84cc",
+      "name": "Update Condominium",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10646eae-ae46-4327-a4dc-9987c2d76173",
+              "name": "folder_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c78ad88c-26fc-4440-ba1b-303147ea3dd8",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e0a8ff17-cbe8-49f1-be87-ff8276c1706b",
+      "name": "Set Updated Condominium",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10646eae-ae46-4327-a4dc-9987c2d76173",
+              "name": "folder_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c78ad88c-26fc-4440-ba1b-303147ea3dd8",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f435e78-d2b9-468a-b2ae-ad71bf6b6181",
+      "name": "Set Created Condominium",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Condominium flow\n\nThis workflow will be triggered when a folder is created under the *Condomínios* folder. It'll then sync the *Supabase* register with the folder to poll for updates.",
+        "height": 220,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -280
+      ],
+      "id": "8099397b-3032-49fe-bfcb-61fbab23fe36",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Update Condominium flow\n\nThis workflow will be triggered when a folder under the *Condomínios* folder is updated. It'll then sync the *Supabase* register with the folder to poll for updates and keep it .",
+        "height": 220,
+        "width": 300,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        420
+      ],
+      "id": "cb61e4ff-2bfa-4ba5-91cd-affa4cb51f07",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "function randomUUID() {\n  const uuid = new Array(36);\n  for (let i = 0; i < 36; i++) {\n    uuid[i] = Math.floor(Math.random() * 16);\n  }\n  uuid[14] = 4; // set bits 12-15 of time-high-and-version to 0100\n  uuid[19] = uuid[19] &= ~(1 << 2); // set bit 6 of clock-seq-and-reserved to zero\n  uuid[19] = uuid[19] |= (1 << 3); // set bit 7 of clock-seq-and-reserved to one\n  uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';\n  return uuid.map((x) => x.toString(16)).join('');\n}\n\nconst folderId = $('Create Condominium').first().json.id\nconst folderName = $('Create Condominium').first().json.name\n\nconst [x, y] = $input.first().json.nodes.at(-1).position\n\nconst fileCreatedNodeName = \"On File Created (\" + folderName + \")\"\nconst fileCreatedNode = {\n  parameters: {\n    pollTimes: {\n      item: [\n        {\n          mode: \"everyMinute\"\n        }\n      ]\n    },\n    triggerOn: \"specificFolder\",\n    folderToWatch: {\n      __rl: true,\n      value: folderId,\n      mode: \"id\",\n    },\n    event: \"fileCreated\",\n    options: {}\n  },\n  type: \"n8n-nodes-base.googleDriveTrigger\",\n  typeVersion: 1,\n  position: [\n    x,\n    y + 200\n  ],\n  id: randomUUID(),\n  name: fileCreatedNodeName,\n  credentials: {\n    googleDriveOAuth2Api: {\n      id: \"AK6Ai2Pd7cZvY6gL\",\n      name: \"Google Drive account\"\n    }\n  }\n}\nconst fileCreatedNodeConnection = {\n  [fileCreatedNodeName]: {\n    main: [\n      [\n        {\n          node: \"Ingest Files\",\n          type: \"main\",\n          index: 0\n        }\n      ]\n    ]\n  }\n}\n\nconst fileUpdatedNodeName = \"On File Updated (\" + folderName + \")\"\nconst fileUpdatedNode = {\n  parameters: {\n    pollTimes: {\n      item: [\n        {\n          mode: \"everyMinute\"\n        }\n      ]\n    },\n    triggerOn: \"specificFolder\",\n    folderToWatch: {\n      __rl: true,\n      value: folderId,\n      mode: \"id\"\n    },\n    event: \"fileUpdated\",\n    options: {}\n  },\n  type: \"n8n-nodes-base.googleDriveTrigger\",\n  typeVersion: 1,\n  position: [\n    x,\n    y + 350\n  ],\n  id: randomUUID(),\n  name: fileUpdatedNodeName,\n  credentials: {\n    googleDriveOAuth2Api: {\n      id: \"AK6Ai2Pd7cZvY6gL\",\n      name: \"Google Drive account\"\n    }\n  }\n}\nconst fileUpdatedNodeConnection = {\n  [fileUpdatedNodeName]: {\n    main: [\n      [\n        {\n          node: \"Ingest Files\",\n          type: \"main\",\n          index: 0\n        }\n      ]\n    ]\n  }\n}\n\nconst updatedWorkflow = {\n  name: $input.first().json.name,\n  nodes: [\n    ...$input.first().json.nodes,\n    fileCreatedNode,\n    fileUpdatedNode\n  ],\n  connections: {\n    ...$input.first().json.connections,\n    ...fileCreatedNodeConnection,\n    ...fileUpdatedNodeConnection\n  },\n  settings: $input.first().json.settings\n}\n\nreturn [updatedWorkflow];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        -140
+      ],
+      "id": "7f105080-5877-405e-a9a9-08fa9c6f37b0",
+      "name": "Add new Watch Node"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "value": "XXmG7fsFAe68u0lM",
+          "mode": "list",
+          "cachedResultName": "Folder Watch (#XXmG7fsFAe68u0lM)"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        700,
+        -140
+      ],
+      "id": "37423ef5-1c06-4bf9-a151-08f45c252af2",
+      "name": "Get Folder Watch Workflow",
+      "credentials": {
+        "n8nApi": {
+          "id": "85czAB48YvRM2pH9",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $('Get Folder Watch Workflow').item.json.id }}",
+          "mode": "id"
+        },
+        "workflowObject": "={{ $json.toJsonString() }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        -140
+      ],
+      "id": "d802af01-1204-4472-87e4-4beb3c01c74e",
+      "name": "Update Folder Watch Workflow",
+      "credentials": {
+        "n8nApi": {
+          "id": "85czAB48YvRM2pH9",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "activate",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $('Get Folder Watch Workflow').item.json.id }}",
+          "mode": "id"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        -140
+      ],
+      "id": "ad234453-0322-490a-b068-10b3fcd2ca15",
+      "name": "Activate Workflow",
+      "credentials": {
+        "n8nApi": {
+          "id": "85czAB48YvRM2pH9",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Create Moradores File').item.json.spreadsheetId }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Set Created Condominium').item.json.folder_id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1140,
+        -380
+      ],
+      "id": "9e94b0f9-7c54-417d-a6da-a0391a73d8b2",
+      "name": "Move Moradores to Condominium Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AK6Ai2Pd7cZvY6gL",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "spreadsheet",
+        "title": "Moradores",
+        "sheetsUi": {
+          "sheetValues": [
+            {
+              "title": "moradores"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        -380
+      ],
+      "id": "85b09080-29b3-481e-9679-3eccda83b6ff",
+      "name": "Create Moradores File",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ux5zp2OjjsEzZ5aa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "764e3673-45c0-43cd-b2bc-7ad034616303",
+              "name": "NIF",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d1dab207-ab9a-45e0-9285-374eefaf0fc8",
+              "name": "Nome",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e692c570-c592-4222-8c75-b54421e47651",
+              "name": "Número de Telefone",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "1d5f4807-50ab-4643-8d4b-cc1b51ec5b51",
+              "name": "Data de nascimento",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        700,
+        -380
+      ],
+      "id": "3b798710-0e2a-4897-bdd9-479b2d209d31",
+      "name": "Set Headers"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2210c65-fbcb-4bd9-9513-f22c21fb7726",
+              "name": "condominium_id",
+              "value": "={{ $('Create Condominium').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "2a9a02ca-0b19-48bb-8359-00bb6b640e40",
+              "name": "jira_id",
+              "value": "={{ $json.options[0].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1140,
+        100
+      ],
+      "id": "3e1b5acf-81c0-46d5-9481-c6fb4f12d20d",
+      "name": "Set Jira to Condominium"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "condominiums",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.condominium_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "jira_id",
+              "fieldValue": "={{ $json.jira_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        100
+      ],
+      "id": "11d58b57-59d7-4967-9a83-df1a00bf6558",
+      "name": "Update Condominium jira_id",
+      "credentials": {
+        "supabaseApi": {
+          "id": "i59LZYEEd30bMO4x",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dltagg.atlassian.net/rest/api/3/filter",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"name\": \"{{ $json.options[0].value }}\",\n    \"description\": \"Exibe itens que estão associados ao condomínio {{ $json.options[0].value }}\",\n    \"jql\": \"cf[{{ $('Set Jira Data').item.json.custom_field_id }}] = \\\"{{ $json.options[0].value }}\\\"\",\n    \"sharePermissions\": [\n        {\n            \"type\": \"project\",\n            \"project\": {\n                \"id\": {{ $('Set Jira Data').item.json.project_id }}\n            }\n        }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        300
+      ],
+      "id": "58898883-bd9b-4e72-b3eb-8c001ab3debc",
+      "name": "Create Custom Filter",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://dltagg.atlassian.net/rest/api/3/field/customfield_{{ $json.custom_field_id }}/context/{{ $json.context_id }}/option",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"options\": [\n    {\n      \"disabled\": false,\n      \"value\": \"{{ $('Create Condominium').item.json.name }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        100
+      ],
+      "id": "cc993d01-4d42-454f-a3a3-7ec7e57e6b2e",
+      "name": "Create Custom Field Options (context)",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "H0WuZvxS9jRPBrna",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b492e52-4d2f-4d17-880f-7ac6498a9a9e",
+              "name": "project_id",
+              "value": "10002",
+              "type": "string"
+            },
+            {
+              "id": "64f2eb55-7ece-46d4-b901-8f2cf6b856e4",
+              "name": "custom_field_id",
+              "value": 10124,
+              "type": "number"
+            },
+            {
+              "id": "e428907c-0216-4a15-9c20-e8134a380d4f",
+              "name": "context_id",
+              "value": 10225,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        700,
+        100
+      ],
+      "id": "05ebd94b-48a8-4acf-94a4-0a44c2c9115b",
+      "name": "Set Jira Data"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Create Moradores File').item.json.spreadsheetId }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Create Moradores File').item.json.sheets[0].properties.sheetId }}",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "NIF",
+              "displayName": "NIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Número de Telefone",
+              "displayName": "Número de Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Data de nascimento",
+              "displayName": "Data de nascimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        920,
+        -380
+      ],
+      "id": "ac0897c3-aaec-479b-ad07-231a2a138622",
+      "name": "Add Headers to Moradores File",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ux5zp2OjjsEzZ5aa",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Folder Created": {
+      "main": [
+        [
+          {
+            "node": "Set Created Condominium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Folder Updated": {
+      "main": [
+        [
+          {
+            "node": "Set Updated Condominium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Condominium": {
+      "main": [
+        [
+          {
+            "node": "Get Folder Watch Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Jira Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Updated Condominium": {
+      "main": [
+        [
+          {
+            "node": "Update Condominium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Created Condominium": {
+      "main": [
+        [
+          {
+            "node": "Create Moradores File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Condominium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add new Watch Node": {
+      "main": [
+        [
+          {
+            "node": "Update Folder Watch Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Folder Watch Workflow": {
+      "main": [
+        [
+          {
+            "node": "Add new Watch Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Folder Watch Workflow": {
+      "main": [
+        [
+          {
+            "node": "Activate Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move Moradores to Condominium Folder": {
+      "main": [
+        []
+      ]
+    },
+    "Create Moradores File": {
+      "main": [
+        [
+          {
+            "node": "Set Headers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Headers": {
+      "main": [
+        [
+          {
+            "node": "Add Headers to Moradores File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Jira to Condominium": {
+      "main": [
+        [
+          {
+            "node": "Update Condominium jira_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Custom Field Options (context)": {
+      "main": [
+        [
+          {
+            "node": "Set Jira to Condominium",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Custom Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Jira Data": {
+      "main": [
+        [
+          {
+            "node": "Create Custom Field Options (context)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Headers to Moradores File": {
+      "main": [
+        [
+          {
+            "node": "Move Moradores to Condominium Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Folder Created": {
+      "lastTimeChecked": "2025-04-24T10:55:12Z"
+    },
+    "node:Folder Updated": {
+      "lastTimeChecked": "2025-04-24T10:55:12Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Set Jira to Condominium": [
+      {
+        "json": {
+          "condominium_id": "1LOLzPfGPmHxr_NcZjh3X9WOL1mM1Cnuk",
+          "jira_id": "10089"
+        }
+      }
+    ],
+    "Folder Created": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "copyRequiresWriterPermission": false,
+          "writersCanShare": true,
+          "viewedByMe": true,
+          "mimeType": "application/vnd.google-apps.folder",
+          "parents": [
+            "1ngZmnnMroKObJFp58b2YNPOHtv4dT4xO"
+          ],
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.folder",
+          "shared": false,
+          "lastModifyingUser": {
+            "displayName": "Luiz Moura",
+            "kind": "drive#user",
+            "me": true,
+            "permissionId": "13222640052300274131",
+            "emailAddress": "luiz.moura@dltagg.com",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64"
+          },
+          "owners": [
+            {
+              "displayName": "Luiz Moura",
+              "kind": "drive#user",
+              "me": true,
+              "permissionId": "13222640052300274131",
+              "emailAddress": "luiz.moura@dltagg.com",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64"
+            }
+          ],
+          "webViewLink": "https://drive.google.com/drive/folders/105nc63fgWYq1ZLnNUS47CH7ngerwSsT5",
+          "viewersCanCopyContent": true,
+          "permissions": [
+            {
+              "id": "13222640052300274131",
+              "displayName": "Luiz Moura",
+              "type": "user",
+              "kind": "drive#permission",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLzm59VKnoQoAqdDwXurN3GKM7CMd5-3nl0nFNoAIFfsj2g_A=s64",
+              "emailAddress": "luiz.moura@dltagg.com",
+              "role": "owner",
+              "deleted": false,
+              "pendingOwner": false
+            }
+          ],
+          "hasThumbnail": false,
+          "spaces": [
+            "drive"
+          ],
+          "folderColorRgb": "#8f8f8f",
+          "id": "105nc63fgWYq1ZLnNUS47CH7ngerwSsT5",
+          "name": "Condo C",
+          "starred": false,
+          "trashed": false,
+          "explicitlyTrashed": false,
+          "createdTime": "2025-04-01T12:17:30.690Z",
+          "modifiedTime": "2025-04-01T12:17:30.690Z",
+          "modifiedByMeTime": "2025-04-01T12:17:30.690Z",
+          "viewedByMeTime": "2025-04-01T12:17:30.690Z",
+          "quotaBytesUsed": "0",
+          "version": "2",
+          "ownedByMe": true,
+          "isAppAuthorized": false,
+          "capabilities": {
+            "canChangeViewersCanCopyContent": false,
+            "canEdit": true,
+            "canCopy": false,
+            "canComment": true,
+            "canAddChildren": true,
+            "canDelete": true,
+            "canDownload": true,
+            "canListChildren": true,
+            "canRemoveChildren": true,
+            "canRename": true,
+            "canTrash": true,
+            "canReadRevisions": false,
+            "canChangeCopyRequiresWriterPermission": false,
+            "canMoveItemIntoTeamDrive": true,
+            "canUntrash": true,
+            "canModifyContent": true,
+            "canMoveItemOutOfDrive": true,
+            "canAddMyDriveParent": false,
+            "canRemoveMyDriveParent": true,
+            "canMoveItemWithinDrive": true,
+            "canShare": true,
+            "canMoveChildrenWithinDrive": true,
+            "canModifyContentRestriction": false,
+            "canChangeSecurityUpdateEnabled": false,
+            "canAcceptOwnership": false,
+            "canReadLabels": false,
+            "canModifyLabels": false,
+            "canModifyEditorContentRestriction": false,
+            "canModifyOwnerContentRestriction": false,
+            "canRemoveContentRestriction": false,
+            "canDisableInheritedPermissions": true,
+            "canEnableInheritedPermissions": true
+          },
+          "thumbnailVersion": "0",
+          "modifiedByMe": true,
+          "permissionIds": [
+            "13222640052300274131"
+          ],
+          "linkShareMetadata": {
+            "securityUpdateEligible": false,
+            "securityUpdateEnabled": true
+          },
+          "inheritedPermissionsDisabled": false
+        }
+      }
+    ],
+    "Create Custom Field Options (context)": [
+      {
+        "json": {
+          "options": [
+            {
+              "id": "10153",
+              "value": "Condo C",
+              "disabled": false
+            }
+          ]
+        }
+      }
+    ],
+    "Set Jira Data": [
+      {
+        "json": {
+          "custom_field_id": 10124,
+          "context_id": 10225
+        }
+      }
+    ]
+  },
+  "versionId": "a12375c9-3c4f-4881-ad83-3870d4c2d7d0",
+  "triggerCount": 2,
+  "tags": []
+}

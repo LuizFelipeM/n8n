@@ -1,0 +1,276 @@
+{
+  "createdAt": "2025-03-19T00:07:39.864Z",
+  "updatedAt": "2025-03-21T17:49:28.034Z",
+  "id": "m50zdIgN7G1VHM9w",
+  "name": "Jira Ticket Quantity of Affected People",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "02fbe16d-e68d-46a3-a315-dbdee6cc2355",
+      "name": "Merge Electricity Rows"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -540,
+        0
+      ],
+      "id": "ca7c4f62-263d-4c99-84f0-ce7e51ae9876",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "4e3326f3-0aeb-4245-b9a9-81421644057f",
+      "name": "Aggregate Sections"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "29c14cd9-89f7-4244-a029-fc1a38676c3a",
+              "name": "body",
+              "value": "Por favor, escolha a quantidade de pessoas afetadas pelo problema",
+              "type": "string"
+            },
+            {
+              "id": "ea690f1a-8e16-411c-be1e-bda77a5088c2",
+              "name": "button",
+              "value": "Pessoas afetadas",
+              "type": "string"
+            },
+            {
+              "id": "82b72e44-66b1-4fed-9d5f-4a2012e2fc7d",
+              "name": "sections",
+              "value": "=[\n  {\n    \"title\": \"\",\n    \"rows\": {{ $json.data.toJsonString() }}\n  }\n]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        0
+      ],
+      "id": "836be73f-0eae-4d8b-9e97-c8058643485c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_qty_affected.1",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Todos os moradores",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -160
+      ],
+      "id": "935256c7-2af6-4d48-81c2-677ea51094df",
+      "name": "Everyone Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_qty_affected.3",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Todos no meu piso",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "ba4bc0f7-c5e0-4e96-b557-c219637e0896",
+      "name": "Everybody in my floor Row"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bcefa09-fec5-400c-93f0-2e4f8e00fa1c",
+              "name": "id",
+              "value": "ticket_qty_affected.4",
+              "type": "string"
+            },
+            {
+              "id": "e2a269d5-f104-4804-9f3d-a1901624443e",
+              "name": "title",
+              "value": "Somente eu",
+              "type": "string"
+            },
+            {
+              "id": "c4da330d-2f70-45a7-b692-1c19de06219f",
+              "name": "description",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        180
+      ],
+      "id": "bd440cb1-1665-4482-85ad-a9061556dca7",
+      "name": "Just me Row"
+    }
+  ],
+  "connections": {
+    "Merge Electricity Rows": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Everyone Row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Everybody in my floor Row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Just me Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Sections": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Everyone Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Electricity Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Everybody in my floor Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Electricity Rows",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Just me Row": {
+      "main": [
+        [
+          {
+            "node": "Merge Electricity Rows",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f4a83c81-517d-47f9-b5ba-cba273c527cd",
+  "triggerCount": 0,
+  "tags": []
+}
